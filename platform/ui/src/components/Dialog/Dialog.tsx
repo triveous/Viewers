@@ -27,7 +27,7 @@ const Dialog = ({
   const border = 'border-0 rounded';
   const outline = 'outline-none focus:outline-none';
   const position = 'relative';
-  const width = 'w-full';
+  const width = 'w-[500px]';
   const padding = 'px-[20px] pb-[20px] pt-[13px]';
 
   useEffect(() => {

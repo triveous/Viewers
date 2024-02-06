@@ -29,24 +29,24 @@ function getFilteredCornerstoneToolState(measurementData, additionalFindingTypes
     const toolData = imageIdSpecificToolState[toolType].data;
 
     let { finding } = measurementDataI;
-    const findingSites = [];
+    let findingSites = [];
 
     // NOTE -> We use the CORNERSTONEJS coding schemeDesignator which we have
     // defined in the @cornerstonejs/adapters
     if (measurementDataI.label) {
-      if (additionalFindingTypes.includes(toolType)) {
-        finding = {
+      finding = {
+        CodeValue: 'CORNERSTONEFREETEXT',
+        CodingSchemeDesignator: 'CORNERSTONEJS',
+        CodeMeaning: measurementDataI.label,
+      };
+    } else if (measurementDataI.description) {
+      findingSites = [
+        {
           CodeValue: 'CORNERSTONEFREETEXT',
           CodingSchemeDesignator: 'CORNERSTONEJS',
-          CodeMeaning: measurementDataI.label,
-        };
-      } else {
-        findingSites.push({
-          CodeValue: 'CORNERSTONEFREETEXT',
-          CodingSchemeDesignator: 'CORNERSTONEJS',
-          CodeMeaning: measurementDataI.label,
-        });
-      }
+          CodeMeaning: measurementDataI.description,
+        },
+      ];
     }
 
     if (measurementDataI.findingSites) {
