@@ -17,9 +17,9 @@ window.config = {
       configuration: {
         friendlyName: 'Orthanc Server',
         name: 'Orthanc',
-        wadoUriRoot: 'https://127.0.0.1/pacs/dicom-web',
-        qidoRoot: 'https://127.0.0.1/pacs/dicom-web',
-        wadoRoot: 'https://127.0.0.1/pacs/dicom-web',
+        wadoUriRoot: '/pacs/dicom-web',
+        qidoRoot: '/pacs/dicom-web',
+        wadoRoot: '/pacs/dicom-web',
         qidoSupportsIncludeField: true,
         supportsReject: true,
         imageRendering: 'wadors',
@@ -39,9 +39,9 @@ window.config = {
     {
       // ~ REQUIRED
       // Authorization Server URL
-      authority: 'https://127.0.0.1/kc/realms/midas',
+      authority: '/kc/realms/midas',
       client_id: 'ohif-viewer',
-      redirect_uri: 'https://127.0.0.1/callback', // `OHIFStandaloneViewer.js`
+      redirect_uri: '/callback', // `OHIFStandaloneViewer.js`
       // "Authorization Code Flow"
       // Resource: https://medium.com/@darutk/diagrams-of-all-the-openid-connect-flows-6968e3990660
       response_type: 'code',
