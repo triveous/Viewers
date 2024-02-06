@@ -43,7 +43,7 @@ const SearchBar = ({ onSelectHandler }) => {
     try {
       setLoading(true);
       const response = await fetch(
-        `${process.env.MIDAS_HUB_BACKEND_URL ?? 'https://3.109.154.173'}/api/ontology/search?searchTerm=${query}&page=1&pageSize=100`
+        `${'https://3.109.154.173'}/be/ontology/search?searchTerm=${query}&page=1&pageSize=100`
       );
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`);
