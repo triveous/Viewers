@@ -7,6 +7,8 @@ import {
   Input,
   useViewportGrid,
   ButtonEnums,
+  Icon,
+  ProgressLoadingBar,
 } from '@ohif/ui';
 import { DicomMetadataStore, utils } from '@ohif/core';
 import { useDebounce } from '@hooks';
@@ -23,6 +25,108 @@ const DISPLAY_STUDY_SUMMARY_INITIAL_VALUE = {
   modality: '', // 'CT',
   description: '', // 'CHEST/ABD/PELVIS W CONTRAST',
 };
+const SearchBar = ({ onSelectHandler }) => {
+  const [active, setActive] = useState(false);
+  const [data, setData] = useState([]);
+  const [searchInput, setSearchInput] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  function debounce(fn: { (query: any): void; (arg0: any): void }, delay: number | undefined) {
+    let timeoutId: string | number | NodeJS.Timeout | undefined;
+    return (args: string) => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => fn(args), delay);
+    };
+  }
+
+  const debouncedUpdateQuery = debounce(async query => {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `${process.env.MIDAS_HUB_BACKEND_URL}/api/ontology/search?searchTerm=${query}&page=1&pageSize=100`
+      );
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+      const result = await response.json();
+      if (query.length > 0) {
+        setData(result);
+      } // Assuming your API response is an array and you want to store it in the state
+      setLoading(false);
+    } catch (error) {
+      console.error('API call failed:', error.message);
+    }
+  }, 1000);
+
+  const handleSubmit = e => {
+    setSearchInput(e.target.value);
+    if (e.target.value == 0) {
+      setActive(false);
+      return;
+    }
+    setLoading(true);
+    setActive(true);
+    debouncedUpdateQuery(e.target.value);
+  };
+
+  return (
+    <div className="">
+      <div className="">
+        <Input
+          label="Enter your label"
+          labelClassName="text-white grow text-[14px] leading-[1.2]"
+          autoFocus
+          id="annotation"
+          className="border-primary-main bg-black"
+          type="text"
+          value={searchInput}
+          onChange={e => handleSubmit(e)}
+        />
+      </div>
+      {active && (
+        <div className="border-inputfield-main focus:border-inputfield-focus disabled:border-inputfield-disabled placeholder-inputfield-placeholder flex max-h-[200px] w-full appearance-none flex-col items-center justify-center overflow-auto rounded border py-2 px-3  leading-tight  shadow transition duration-300 focus:outline-none">
+          {loading ? (
+            <LoadingBar />
+          ) : (
+            // eslint-disable-next-line react/prop-types
+            data &&
+            data?.map((item, index) => {
+              return (
+                <div
+                  className="w-full hover:bg-black focus:bg-black"
+                  key={index}
+                  onClick={e => {
+                    setSearchInput(item.value);
+                    setData([]);
+                    setActive(false);
+                    onSelectHandler(e, item);
+                  }}
+                >
+                  <div className="py-2 text-sm text-white">{item.label}</div>
+                  <div className="py-2 text-sm text-blue-300">{item.value}</div>
+                </div>
+              );
+            })
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const LoadingBar = () => {
+  return (
+    <div className={' flex flex-col items-center justify-center space-y-5'}>
+      <Icon
+        name="loading-ohif-mark"
+        className="h-12 w-12 text-white"
+      />
+      <div className="w-48">
+        <ProgressLoadingBar />
+      </div>
+    </div>
+  );
+};
 
 function PanelMeasurementTableTracking({ servicesManager, extensionManager }) {
   const [viewportGrid] = useViewportGrid();
@@ -36,7 +140,7 @@ function PanelMeasurementTableTracking({ servicesManager, extensionManager }) {
   );
   const [displayMeasurements, setDisplayMeasurements] = useState([]);
   const measurementsPanelRef = useRef(null);
-
+  const [measurementUpdated, setMeasurementUpdated] = useState(false);
   useEffect(() => {
     const measurements = measurementService.getMeasurements();
     const filteredMeasurements = measurements.filter(
@@ -48,7 +152,13 @@ function PanelMeasurementTableTracking({ servicesManager, extensionManager }) {
     );
     setDisplayMeasurements(mappedMeasurements);
     // eslint-ignore-next-line
-  }, [measurementService, trackedStudy, trackedSeries, debouncedMeasurementChangeTimestamp]);
+  }, [
+    measurementUpdated,
+    measurementService,
+    trackedStudy,
+    trackedSeries,
+    debouncedMeasurementChangeTimestamp,
+  ]);
 
   const updateDisplayStudySummary = async () => {
     if (trackedMeasurements.matches('tracking')) {
@@ -138,6 +248,19 @@ function PanelMeasurementTableTracking({ servicesManager, extensionManager }) {
     const onSubmitHandler = ({ action, value }) => {
       switch (action.id) {
         case 'save': {
+          if (measurement.findingSites) {
+            measurement.findingSites[0].CodeMeaning = value.description;
+            measurement.findingSites[0].text = value.description;
+          } else {
+            measurement.findingSites = [
+              {
+                CodeValue: 'CORNERSTONEFREETEXT',
+                CodingSchemeDesignator: 'CORNERSTONEJS',
+                CodeMeaning: value.description,
+                text: value.description,
+              },
+            ];
+          }
           measurementService.update(
             uid,
             {
@@ -146,6 +269,7 @@ function PanelMeasurementTableTracking({ servicesManager, extensionManager }) {
             },
             true
           );
+          setMeasurementUpdated(!measurementUpdated);
         }
       }
       uiDialogService.dismiss({ id: 'enter-annotation' });
@@ -160,7 +284,10 @@ function PanelMeasurementTableTracking({ servicesManager, extensionManager }) {
       contentProps: {
         title: 'Annotation',
         noCloseButton: true,
-        value: { label: measurement.label || '' },
+        value: {
+          label: measurement.label || '',
+          description: measurement?.findingSites?.[0]?.text || '',
+        },
         body: ({ value, setValue }) => {
           const onChangeHandler = event => {
             event.persist();
@@ -173,17 +300,14 @@ function PanelMeasurementTableTracking({ servicesManager, extensionManager }) {
             }
           };
           return (
-            <Input
-              label="Enter your annotation"
-              labelClassName="text-white grow text-[14px] leading-[1.2]"
-              autoFocus
-              id="annotation"
-              className="border-primary-main bg-black"
-              type="text"
-              value={value.label}
-              onChange={onChangeHandler}
-              onKeyPress={onKeyPressHandler}
-            />
+            <div className="flex w-full flex-col gap-5">
+              <SearchBar
+                onSelectHandler={(e, selected) => {
+                  e.persist();
+                  setValue({ label: selected.label, description: selected.value });
+                }}
+              />
+            </div>
           );
         },
         actions: [
@@ -229,20 +353,11 @@ function PanelMeasurementTableTracking({ servicesManager, extensionManager }) {
         )}
         <MeasurementTable
           title="Measurements"
-          data={displayMeasurementsWithoutFindings}
+          data={[...displayMeasurementsWithoutFindings, ...additionalFindings]}
           servicesManager={servicesManager}
           onClick={jumpToImage}
           onEdit={onMeasurementItemEditHandler}
         />
-        {additionalFindings.length !== 0 && (
-          <MeasurementTable
-            title="Additional Findings"
-            data={additionalFindings}
-            servicesManager={servicesManager}
-            onClick={jumpToImage}
-            onEdit={onMeasurementItemEditHandler}
-          />
-        )}
       </div>
       <div className="flex justify-center p-4">
         <ActionButtons
@@ -308,15 +423,13 @@ function _mapMeasurementToDisplay(measurement, types, displaySetService) {
   if (findingSites) {
     const siteText = [];
     findingSites.forEach(site => {
-      if (site?.text !== label) {
-        siteText.push(site.text);
-      }
+      siteText.push(site.text);
     });
-    displayText = [...siteText, ...displayText];
+    displayText = [...siteText];
   }
-  if (finding && finding?.text !== label) {
-    displayText = [finding.text, ...displayText];
-  }
+  // if (finding && finding?.text !== label) {
+  //   displayText = [finding.text, ...displayText];
+  // }
 
   return {
     uid,

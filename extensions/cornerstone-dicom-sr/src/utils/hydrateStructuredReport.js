@@ -15,7 +15,9 @@ const supportedLegacyCornerstoneTags = ['cornerstoneTools@^4.0.0'];
 
 const convertCode = (codingValues, code) => {
   if (!code || code.CodingSchemeDesignator === 'CORNERSTONEJS') {
-    return;
+    const ref = `${code.CodingSchemeDesignator}:${code.CodeValue}`;
+    const ret = { ...codingValues[ref], ref, ...code, text: code.CodeMeaning };
+    return ret;
   }
   const ref = `${code.CodingSchemeDesignator}:${code.CodeValue}`;
   const ret = { ...codingValues[ref], ref, ...code, text: code.CodeMeaning };
@@ -190,6 +192,7 @@ export default function hydrateStructuredReport(
         CORNERSTONE_3D_TOOLS_SOURCE_VERSION
       );
       annotation.data.label = getLabelFromDCMJSImportedToolData(toolData);
+      annotation.data.text = annotation.data.label;
       annotation.data.finding = convertCode(codingValues, toolData.finding?.[0]);
       annotation.data.findingSites = convertSites(codingValues, toolData.findingSites);
       annotation.data.site = annotation.data.findingSites?.[0];
