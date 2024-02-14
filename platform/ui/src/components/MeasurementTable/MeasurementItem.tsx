@@ -4,12 +4,27 @@ import classnames from 'classnames';
 
 import Icon from '../Icon';
 
-const MeasurementItem = ({ uid, index, label, displayText, isActive, onClick, onEdit, item }) => {
+const MeasurementItem = ({
+  uid,
+  index,
+  label,
+  displayText,
+  isActive,
+  onClick,
+  onEdit,
+  onDelete,
+  item,
+}) => {
   const [isHovering, setIsHovering] = useState(false);
 
   const onEditHandler = event => {
     event.stopPropagation();
     onEdit({ uid, isActive, event });
+  };
+
+  const onDeleteHandler = event => {
+    event.stopPropagation();
+    onDelete({ uid });
   };
 
   const onClickHandler = event => onClick({ uid, isActive, event });
@@ -40,29 +55,29 @@ const MeasurementItem = ({ uid, index, label, displayText, isActive, onClick, on
       >
         {index}
       </div>
-      <div className="relative flex flex-1 flex-col px-2 py-1">
-        <span className="text-primary-light mb-1 text-base">{label}</span>
-        {displayText.map((line, i) => (
-          <span
-            key={i}
-            className="border-primary-light border-l pl-2 text-base text-white"
-            dangerouslySetInnerHTML={{ __html: line }}
-          ></span>
-        ))}
-        <Icon
-          className={classnames(
-            'absolute w-4 cursor-pointer text-white transition duration-300',
-            { 'invisible mr-2 opacity-0': !isActive && !isHovering },
-            { 'opacity-1 visible': !isActive && isHovering }
-          )}
-          name="pencil"
-          style={{
-            top: 4,
-            right: 4,
-            transform: isActive || isHovering ? '' : 'translateX(100%)',
-          }}
-          onClick={onEditHandler}
-        />
+      <div className=" w-full ">
+        <div className="relative flex flex-1 flex-col px-2 py-1">
+          <span className="text-primary-light mb-1 text-base">{label}</span>
+          {displayText.map((line, i) => (
+            <span
+              key={i}
+              className="border-primary-light border-l pl-2 text-base text-white"
+              dangerouslySetInnerHTML={{ __html: line }}
+            ></span>
+          ))}
+        </div>
+        <div className="flex gap-2 pl-2 pt-2">
+          <Icon
+            className={classnames(' w-4 cursor-pointer text-white transition duration-300')}
+            name="pencil"
+            onClick={onEditHandler}
+          />
+          <Icon
+            className={classnames(' w-4 cursor-pointer text-white transition duration-300')}
+            name="old-trash"
+            onClick={onDeleteHandler}
+          />
+        </div>
       </div>
     </div>
   );
@@ -76,6 +91,7 @@ MeasurementItem.propTypes = {
   isActive: PropTypes.bool,
   onClick: PropTypes.func,
   onEdit: PropTypes.func,
+  onDelete: PropTypes.func,
 };
 
 MeasurementItem.defaultProps = {
