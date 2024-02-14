@@ -282,7 +282,7 @@ function PanelMeasurementTableTracking({ servicesManager, extensionManager }) {
       showOverlay: true,
       content: Dialog,
       contentProps: {
-        title: 'Annotation',
+        title: 'Edit Measurement',
         noCloseButton: true,
         value: {
           label: measurement.label || '',
@@ -313,6 +313,52 @@ function PanelMeasurementTableTracking({ servicesManager, extensionManager }) {
         actions: [
           { id: 'cancel', text: 'Cancel', type: ButtonEnums.type.secondary },
           { id: 'save', text: 'Save', type: ButtonEnums.type.primary },
+        ],
+        onSubmit: onSubmitHandler,
+      },
+    });
+  };
+
+  const onMeasurementItemDeleteHandler = ({ uid, isActive }) => {
+    const measurement = measurementService.getMeasurement(uid);
+    jumpToImage({ uid, isActive });
+
+    const onSubmitHandler = ({ action, value }) => {
+      switch (action.id) {
+        case 'delete': {
+          measurementService.remove(uid, 1, 2);
+          break;
+        }
+        case 'cancel': {
+          break;
+        }
+      }
+      uiDialogService.dismiss({ id: 'delete-annotation' });
+    };
+
+    uiDialogService.create({
+      id: 'delete-annotation',
+      centralize: true,
+      isDraggable: false,
+      showOverlay: true,
+      content: Dialog,
+      contentProps: {
+        title: 'Delete Measurement',
+        noCloseButton: true,
+        value: {
+          label: measurement.label || '',
+          description: measurement?.findingSites?.[0]?.text || '',
+        },
+        body: ({ value, setValue }) => {
+          return (
+            <div className="flex w-full flex-col gap-5 text-white">
+              <div>Are you sure ?</div>
+            </div>
+          );
+        },
+        actions: [
+          { id: 'cancel', text: 'Cancel', type: ButtonEnums.type.secondary },
+          { id: 'delete', text: 'Delete', type: ButtonEnums.type.primary },
         ],
         onSubmit: onSubmitHandler,
       },
@@ -357,6 +403,7 @@ function PanelMeasurementTableTracking({ servicesManager, extensionManager }) {
           servicesManager={servicesManager}
           onClick={jumpToImage}
           onEdit={onMeasurementItemEditHandler}
+          onDelete={onMeasurementItemDeleteHandler}
         />
       </div>
       <div className="flex justify-center p-4">

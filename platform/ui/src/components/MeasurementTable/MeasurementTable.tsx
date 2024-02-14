@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 
 import MeasurementItem from './MeasurementItem';
 
-const MeasurementTable = ({ data, title, onClick, onEdit, servicesManager }) => {
+const MeasurementTable = ({ data, title, onClick, onDelete, onEdit, servicesManager }) => {
   servicesManager = servicesManager as ServicesManager;
   const { customizationService } = servicesManager.services;
   const { t } = useTranslation('MeasurementTable');
@@ -36,6 +36,7 @@ const MeasurementTable = ({ data, title, onClick, onEdit, servicesManager }) => 
               item={measurementItem}
               onClick={onClick}
               onEdit={onEdit}
+              onDelete={onDelete}
             />
           ))}
         {data.length === 0 && (
@@ -57,6 +58,7 @@ MeasurementTable.defaultProps = {
   data: [],
   onClick: () => {},
   onEdit: () => {},
+  onDelete: () => {},
 };
 
 MeasurementTable.propTypes = {
@@ -71,6 +73,7 @@ MeasurementTable.propTypes = {
   ),
   onClick: PropTypes.func,
   onEdit: PropTypes.func,
+  onDelete: PropTypes.func,
 };
 
 export default MeasurementTable;
