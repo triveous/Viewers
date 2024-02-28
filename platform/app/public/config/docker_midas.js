@@ -1,5 +1,5 @@
 window.config = {
-  routerBasename: '/',
+  routerBasename: '/dicom',
   showStudyList: true,
   extensions: [],
   modes: [],
