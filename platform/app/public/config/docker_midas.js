@@ -3,6 +3,7 @@ window.config = {
   showStudyList: true,
   extensions: [],
   modes: [],
+  disableEditing: true,
   // below flag is for performance reasons, but it might not work for all servers
 
   showWarningMessageForCrossOrigin: true,
