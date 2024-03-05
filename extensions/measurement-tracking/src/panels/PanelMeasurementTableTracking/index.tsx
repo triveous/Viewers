@@ -51,7 +51,7 @@ const SearchBar = ({ onSelectHandler }) => {
         // setLoading(true);
         const response = await fetch(
           `${
-            process.env.REACT_API_URL ?? ''
+            process.env.REACT_API_URL ?? 'https://3.109.154.173/be'
           }/ontology/search?searchTerm=${debouncedSearchTerm}&page=1&pageSize=100`
         );
 
