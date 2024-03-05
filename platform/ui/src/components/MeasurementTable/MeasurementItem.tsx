@@ -35,7 +35,7 @@ const MeasurementItem = ({
   return (
     <div
       className={classnames(
-        'group flex cursor-pointer border border-transparent bg-black outline-none transition duration-300',
+        'group flex w-[200px] cursor-pointer border border-transparent bg-black outline-none transition duration-300',
         {
           'border-primary-light overflow-hidden rounded': isActive,
         }
@@ -55,13 +55,13 @@ const MeasurementItem = ({
       >
         {index}
       </div>
-      <div className=" w-full ">
-        <div className="relative flex flex-1 flex-col px-2 py-1">
-          <span className="text-primary-light mb-1 text-base">{label}</span>
+      <div className=" w-[200px] ">
+        <div className="relative flex w-[200px] flex-1 flex-col px-2 py-1">
+          <span className="text-primary-light mb-1 w-[200px] text-base">{label}</span>
           {displayText.map((line, i) => (
             <span
               key={i}
-              className="border-primary-light border-l pl-2 text-base text-white"
+              className="border-primary-light w-[200px] whitespace-normal break-words border-l pl-2 text-base text-white"
               dangerouslySetInnerHTML={{ __html: line }}
             ></span>
           ))}

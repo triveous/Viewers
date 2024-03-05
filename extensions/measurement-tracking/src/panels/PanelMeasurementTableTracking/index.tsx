@@ -26,52 +26,63 @@ const DISPLAY_STUDY_SUMMARY_INITIAL_VALUE = {
   description: '', // 'CHEST/ABD/PELVIS W CONTRAST',
 };
 const SearchBar = ({ onSelectHandler }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
   const [active, setActive] = useState(false);
-  const [data, setData] = useState([]);
-  const [searchInput, setSearchInput] = useState('');
   const [loading, setLoading] = useState(false);
+  const [data, setData] = useState([]);
 
-  function debounce(fn: { (query: any): void; (arg0: any): void }, delay: number | undefined) {
-    let timeoutId: string | number | NodeJS.Timeout | undefined;
-    return (args: string) => {
-      clearTimeout(timeoutId);
-      timeoutId = setTimeout(() => fn(args), delay);
-    };
-  }
+  useEffect(() => {
+    const delay = 500;
+    const timeoutId = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, delay);
 
-  const debouncedUpdateQuery = debounce(async query => {
-    try {
-      setLoading(true);
-      const response = await fetch(
-        `${'https://3.109.154.173'}/be/ontology/search?searchTerm=${query}&page=1&pageSize=100`
-      );
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
+    return () => clearTimeout(timeoutId);
+  }, [searchTerm]);
+  // console.log('----process.env.REACT_API_URL---', process.env.REACT_API_URL);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (debouncedSearchTerm == '') {
+          setActive(false);
+          return;
+        }
+        // setLoading(true);
+        const response = await fetch(
+          `${
+            process.env.REACT_API_URL ?? ''
+          }/ontology/search?searchTerm=${debouncedSearchTerm}&page=1&pageSize=100`
+        );
+
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`);
+        }
+        // setLoading(false);
+        const data = await response.json();
+        setData(data);
+
+        setActive(true);
+      } catch (error) {
+        console.error('API call failed:', error.message);
       }
-      const result = await response.json();
-      if (query.length > 0) {
-        setData(result);
-      } // Assuming your API response is an array and you want to store it in the state
-      setLoading(false);
-    } catch (error) {
-      console.error('API call failed:', error.message);
-    }
-  }, 1000);
+    };
 
-  const handleSubmit = e => {
-    setSearchInput(e.target.value);
-    if (e.target.value == 0) {
+    if (debouncedSearchTerm.length > 0) {
+      fetchData();
+    } else {
       setActive(false);
-      return;
+      setData([]);
     }
-    setLoading(true);
-    setActive(true);
-    debouncedUpdateQuery(e.target.value);
+  }, [debouncedSearchTerm, onSelectHandler]);
+
+  const handleChange = e => {
+    setSearchTerm(e.target.value);
   };
 
   return (
-    <div className="">
-      <div className="">
+    <div className="h-[100%] w-[460px]">
+      <div className="h-[100%] w-[460px]">
         <Input
           label="Enter your label"
           labelClassName="text-white grow text-[14px] leading-[1.2]"
@@ -79,31 +90,30 @@ const SearchBar = ({ onSelectHandler }) => {
           id="annotation"
           className="border-primary-main bg-black"
           type="text"
-          value={searchInput}
-          onChange={e => handleSubmit(e)}
+          value={searchTerm}
+          onChange={e => handleChange(e)}
         />
       </div>
       {active && (
-        <div className="border-inputfield-main focus:border-inputfield-focus disabled:border-inputfield-disabled placeholder-inputfield-placeholder flex max-h-[200px] w-full appearance-none flex-col items-center justify-center overflow-auto rounded border py-2 px-3  leading-tight  shadow transition duration-300 focus:outline-none">
+        <div className="max-h-[250px] min-h-[52px] w-[460px] overflow-y-auto ">
           {loading ? (
             <LoadingBar />
           ) : (
-            // eslint-disable-next-line react/prop-types
             data &&
             data?.map((item, index) => {
               return (
                 <div
-                  className="w-full hover:bg-black focus:bg-black"
+                  className="border- p-2 text-sm text-white hover:bg-black focus:bg-black"
                   key={index}
                   onClick={e => {
-                    setSearchInput(item.value);
-                    setData([]);
                     setActive(false);
+                    setSearchTerm(item.value);
+                    setData([]);
                     onSelectHandler(e, item);
                   }}
                 >
-                  <div className="py-2 text-sm text-white">{item.label}</div>
-                  <div className="py-2 text-sm text-blue-300">{item.value}</div>
+                  <div className="whitespace-normal break-words">{item.label}</div>
+                  <div className="whitespace-normal break-words text-blue-300">{item.value}</div>
                 </div>
               );
             })
@@ -282,25 +292,15 @@ function PanelMeasurementTableTracking({ servicesManager, extensionManager }) {
       showOverlay: true,
       content: Dialog,
       contentProps: {
-        title: 'Edit Measurement',
+        title: 'Add Ontology',
         noCloseButton: true,
         value: {
           label: measurement.label || '',
           description: measurement?.findingSites?.[0]?.text || '',
         },
         body: ({ value, setValue }) => {
-          const onChangeHandler = event => {
-            event.persist();
-            setValue(value => ({ ...value, label: event.target.value }));
-          };
-
-          const onKeyPressHandler = event => {
-            if (event.key === 'Enter') {
-              onSubmitHandler({ value, action: { id: 'save' } });
-            }
-          };
           return (
-            <div className="flex w-full flex-col gap-5">
+            <div className="flex w-[460px] flex-col gap-5">
               <SearchBar
                 onSelectHandler={(e, selected) => {
                   e.persist();
