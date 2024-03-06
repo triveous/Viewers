@@ -40,7 +40,7 @@ const SearchBar = ({ onSelectHandler }) => {
 
     return () => clearTimeout(timeoutId);
   }, [searchTerm]);
-  // console.log('----process.env.REACT_API_URL---', process.env.REACT_API_URL);
+  console.log('----process.env.REACT_API_URL---', process.env.REACT_API_URL);
   useEffect(() => {
     const fetchData = async () => {
       try {
