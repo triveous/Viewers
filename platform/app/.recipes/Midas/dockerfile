@@ -25,7 +25,7 @@ FROM node:18.16.1-slim
 COPY ./platform/app/.recipes/Midas/ .
 
 # Copy build output to image
-COPY --from=builder /usr/src/app/platform/app/dist /usr/public/ohif
+COPY --from=builder /usr/src/app/platform/app/dist ./public/ohif
 
 RUN npm install
 
