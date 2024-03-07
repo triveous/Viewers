@@ -26,7 +26,8 @@ jobs:
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: midas-ohif-viewer
-        IMAGE_TAG: trial
       run: |
-        docker build -t $ECR_REGISTRY/midas-ohif-openresty:$IMAGE_TAG -f platform/app/.recipes/Midas/dockerfile .
-        docker push $ECR_REGISTRY/midas-ohif-openresty:$IMAGE_TAG
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:central -f platform/app/.recipes/Midas/dockerfile-central .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:central
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:hub -f platform/app/.recipes/Midas/dockerfile-hub .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:hub

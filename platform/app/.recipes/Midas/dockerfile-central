@@ -1,0 +1,32 @@
+# Stage 1: Build the application
+FROM node:18.16.1-slim as builder
+
+RUN mkdir /usr/src/app
+WORKDIR /usr/src/app
+
+ENV PUBLIC_URL=/ohif/
+ENV APP_CONFIG=config/docker_midas_central.js
+ENV USE_HASH_ROUTER=false
+ENV REACT_API_URL=/be
+ENV QUICK_BUILD=true
+
+# Copy all files from the root of the OHIF source and note
+# that the Docker ignore file at the root (i.e. ./dockerignore) will filter
+# out files and directories that are not needed.
+COPY ./ /usr/src/app/
+
+ADD . /usr/src/app/
+RUN yarn config set workspaces-experimental true
+RUN yarn install
+RUN yarn run build
+
+# Stage 2: Bundle the built application into a Docker container
+FROM node:18.16.1-slim
+COPY ./platform/app/.recipes/Midas/ .
+
+# Copy build output to image
+COPY --from=builder /usr/src/app/platform/app/dist ./public/ohif
+
+RUN npm install
+
+CMD [ "npm", "start"]
