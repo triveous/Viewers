@@ -32,6 +32,7 @@ RUN apt-get update && apt-get install -y build-essential python3
 
 ENV APP_CONFIG=config/docker_midas.js
 ENV PUBLIC_URL='/ohif/'
+ENV REACT_API_URL=/be
 ENV PATH /usr/src/app/node_modules/.bin:$PATH
 
 # Copy all files from the root of the OHIF source and note
