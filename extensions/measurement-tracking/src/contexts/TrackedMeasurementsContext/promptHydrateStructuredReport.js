@@ -17,24 +17,17 @@ function promptHydrateStructuredReport({ servicesManager, extensionManager, appC
   const srDisplaySet = displaySetService.getDisplaySetByUID(displaySetInstanceUID);
 
   return new Promise(async function (resolve, reject) {
-    const promptResult = await _askTrackMeasurements(uiViewportDialogService, viewportId);
+    // Directly resolve with HYDRATE_REPORT response
+    console.warn('!! HYDRATING STRUCTURED REPORT');
+    const hydrationResult = hydrateStructuredReport(
+      { servicesManager, extensionManager, appConfig },
+      displaySetInstanceUID
+    );
 
-    // Need to do action here... So we can set state...
-    let StudyInstanceUID, SeriesInstanceUIDs;
-
-    if (promptResult === RESPONSE.HYDRATE_REPORT) {
-      console.warn('!! HYDRATING STRUCTURED REPORT');
-      const hydrationResult = hydrateStructuredReport(
-        { servicesManager, extensionManager, appConfig },
-        displaySetInstanceUID
-      );
-
-      StudyInstanceUID = hydrationResult.StudyInstanceUID;
-      SeriesInstanceUIDs = hydrationResult.SeriesInstanceUIDs;
-    }
+    const { StudyInstanceUID, SeriesInstanceUIDs } = hydrationResult;
 
     resolve({
-      userResponse: promptResult,
+      userResponse: RESPONSE.HYDRATE_REPORT,
       displaySetInstanceUID: evt.displaySetInstanceUID,
       srSeriesInstanceUID: srDisplaySet.SeriesInstanceUID,
       viewportId,
@@ -44,38 +37,38 @@ function promptHydrateStructuredReport({ servicesManager, extensionManager, appC
   });
 }
 
-function _askTrackMeasurements(uiViewportDialogService, viewportId) {
-  return new Promise(function (resolve, reject) {
-    const message = 'Do you want to continue tracking measurements for this study?';
-    const actions = [
-      {
-        type: ButtonEnums.type.secondary,
-        text: 'No',
-        value: RESPONSE.CANCEL,
-      },
-      {
-        type: ButtonEnums.type.primary,
-        text: 'Yes',
-        value: RESPONSE.HYDRATE_REPORT,
-      },
-    ];
-    const onSubmit = result => {
-      uiViewportDialogService.hide();
-      resolve(result);
-    };
+// function _askTrackMeasurements(uiViewportDialogService, viewportId) {
+//   return new Promise(function (resolve, reject) {
+//     const message = 'Do you want to continue tracking measurements for this study?';
+//     const actions = [
+//       {
+//         type: ButtonEnums.type.secondary,
+//         text: 'No',
+//         value: RESPONSE.CANCEL,
+//       },
+//       {
+//         type: ButtonEnums.type.primary,
+//         text: 'Yes',
+//         value: RESPONSE.HYDRATE_REPORT,
+//       },
+//     ];
+//     const onSubmit = result => {
+//       uiViewportDialogService.hide();
+//       resolve(result);
+//     };
 
-    uiViewportDialogService.show({
-      viewportId,
-      type: 'info',
-      message,
-      actions,
-      onSubmit,
-      onOutsideClick: () => {
-        uiViewportDialogService.hide();
-        resolve(RESPONSE.CANCEL);
-      },
-    });
-  });
-}
+//     uiViewportDialogService.show({
+//       viewportId,
+//       type: 'info',
+//       message,
+//       actions,
+//       onSubmit,
+//       onOutsideClick: () => {
+//         uiViewportDialogService.hide();
+//         resolve(RESPONSE.CANCEL);
+//       },
+//     });
+//   });
+// }
 
 export default promptHydrateStructuredReport;
