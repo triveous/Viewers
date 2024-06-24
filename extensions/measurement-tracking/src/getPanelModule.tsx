@@ -11,7 +11,7 @@ function getPanelModule({ commandsManager, extensionManager, servicesManager }):
       name: 'seriesList',
       iconName: 'tab-studies',
       iconLabel: 'Studies',
-      label: 'Studies',
+      label: 'Reports',
       component: PanelStudyBrowserTracking.bind(null, {
         commandsManager,
         extensionManager,
@@ -23,7 +23,7 @@ function getPanelModule({ commandsManager, extensionManager, servicesManager }):
       name: 'trackedMeasurements',
       iconName: 'tab-linear',
       iconLabel: 'Measure',
-      label: 'Measurements',
+      label: 'Annotations',
       component: PanelMeasurementTableTracking.bind(null, {
         commandsManager,
         extensionManager,

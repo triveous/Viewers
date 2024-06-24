@@ -9,22 +9,21 @@ function ActionButtons({ onExportClick, onCreateReportClick, disabled }) {
 
   return (
     <React.Fragment>
-      <Button
+      {/* <Button
         onClick={onExportClick}
         disabled={disabled}
         type={ButtonEnums.type.secondary}
         size={ButtonEnums.size.small}
       >
         {t('Export')}
-      </Button>
+      </Button> */}
       <Button
-        className="ml-2"
         onClick={onCreateReportClick}
         type={ButtonEnums.type.secondary}
-        size={ButtonEnums.size.small}
+        size={ButtonEnums.size.large}
         disabled={disabled}
       >
-        {t('Create Report')}
+        {t('Save Annotations')}
       </Button>
     </React.Fragment>
   );

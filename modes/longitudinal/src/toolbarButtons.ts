@@ -232,6 +232,142 @@ const toolbarButtons: Button[] = [
       ],
     },
   },
+  // length measurement Tool
+  {
+    id: 'LengthTool',
+    type: 'ohif.radioGroup',
+    props: {
+      type: 'tool',
+      icon: 'tool-length',
+      label: 'length',
+      commands: [
+        {
+          commandName: 'setToolActive',
+          commandOptions: {
+            toolName: 'Length',
+          },
+          context: 'CORNERSTONE',
+        },
+        {
+          commandName: 'setToolActive',
+          commandOptions: {
+            toolName: 'SRLength',
+            toolGroupId: 'SRToolGroup',
+          },
+          context: 'CORNERSTONE',
+        },
+      ],
+    },
+  },
+  // Bidirectional measurement Tool
+  {
+    id: 'bidirectionalTool',
+    type: 'ohif.radioGroup',
+    props: {
+      type: 'tool',
+      icon: 'tool-bidirectional',
+      label: 'Bi-directional',
+      commands: [
+        {
+          commandName: 'setToolActive',
+          commandOptions: {
+            toolName: 'Bidirectional',
+          },
+          context: 'CORNERSTONE',
+        },
+        {
+          commandName: 'setToolActive',
+          commandOptions: {
+            toolName: 'SRBidirectional',
+            toolGroupId: 'SRToolGroup',
+          },
+          context: 'CORNERSTONE',
+        },
+      ],
+    },
+  },
+  // Arrow Annotated measurement Tool
+  {
+    id: 'ArrowAnnotationTool',
+    type: 'ohif.radioGroup',
+    props: {
+      type: 'tool',
+      icon: 'tool-annotate',
+      label: 'Annotation',
+      commands: [
+        {
+          commandName: 'setToolActive',
+          commandOptions: {
+            toolName: 'ArrowAnnotate',
+          },
+          context: 'CORNERSTONE',
+        },
+        {
+          commandName: 'setToolActive',
+          commandOptions: {
+            toolName: 'SRArrowAnnotate',
+            toolGroupId: 'SRToolGroup',
+          },
+          context: 'CORNERSTONE',
+        },
+      ],
+    },
+  },
+  // ellipse measurement Tool
+  {
+    id: 'ellipseTool',
+    type: 'ohif.radioGroup',
+    props: {
+      type: 'tool',
+      icon: 'tool-elipse',
+      label: 'Elipse',
+      commands: [
+        {
+          commandName: 'setToolActive',
+          commandOptions: {
+            toolName: 'EllipticalROI',
+          },
+          context: 'CORNERSTONE',
+        },
+        {
+          commandName: 'setToolActive',
+          commandOptions: {
+            toolName: 'SREllipticalROI',
+            toolGroupId: 'SRToolGroup',
+          },
+          context: 'CORNERSTONE',
+        },
+      ],
+    },
+  },
+  // circle measurement Tool
+  {
+    id: 'circleTool',
+    type: 'ohif.radioGroup',
+    props: {
+      type: 'tool',
+      icon: 'tool-circle',
+      label: 'Circle',
+      commands: [
+        {
+          commandName: 'setToolActive',
+          commandOptions: {
+            toolName: 'CircleROI',
+          },
+          context: 'CORNERSTONE',
+        },
+        {
+          commandName: 'setToolActive',
+          commandOptions: {
+            toolName: 'SRCircleROI',
+            toolGroupId: 'SRToolGroup',
+          },
+          context: 'CORNERSTONE',
+        },
+      ],
+    },
+  },
+
   // Zoom..
   {
     id: 'Zoom',

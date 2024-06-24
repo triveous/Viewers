@@ -5,6 +5,7 @@ enum type {
 enum size {
   medium = 'medium',
   small = 'small',
+  large = 'large',
 }
 
 enum orientation {

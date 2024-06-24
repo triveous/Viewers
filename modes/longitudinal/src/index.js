@@ -114,23 +114,28 @@ function modeFactory({ modeConfiguration }) {
       toolbarService.init(extensionManager);
       toolbarService.addButtons(toolbarButtons);
       toolbarService.createButtonSection('primary', [
-        'MeasurementTools',
+        // 'MeasurementTools',
+        'LengthTool',
+        'bidirectionalTool',
+        'ArrowAnnotationTool',
+        'circleTool',
+        'ellipseTool',
         'Zoom',
-        'WindowLevel',
+        // 'WindowLevel',
         'Pan',
-        'Capture',
-        'Layout',
-        'MPR',
-        'Crosshairs',
-        'MoreTools',
+        // 'Capture',
+        // 'Layout',
+        // 'MPR',
+        // 'Crosshairs',
+        // 'MoreTools',
       ]);
 
-      customizationService.addModeCustomizations([
-        {
-          id: 'segmentation.disableEditing',
-          value: true,
-        },
-      ]);
+      // customizationService.addModeCustomizations([
+      //   {
+      //     id: 'segmentation.disableEditing',
+      //     value: true,
+      //   },
+      // ]);
 
       // // ActivatePanel event trigger for when a segmentation or measurement is added.
       // // Do not force activation so as to respect the state the user may have left the UI in.
@@ -194,8 +199,8 @@ function modeFactory({ modeConfiguration }) {
             id: ohif.layout,
             props: {
               leftPanels: [tracked.thumbnailList],
-              rightPanels: [dicomSeg.panel, tracked.measurements],
-              rightPanelDefaultClosed: true,
+              rightPanels: [tracked.measurements],
+              rightPanelDefaultClosed: false,
               viewports: [
                 {
                   namespace: tracked.viewport,
