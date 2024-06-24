@@ -398,7 +398,7 @@ function PanelMeasurementTableTracking({ servicesManager, extensionManager }) {
           />
         )}
         <MeasurementTable
-          title="Measurements"
+          title="Annotations"
           data={[...displayMeasurementsWithoutFindings, ...additionalFindings]}
           servicesManager={servicesManager}
           onClick={jumpToImage}
