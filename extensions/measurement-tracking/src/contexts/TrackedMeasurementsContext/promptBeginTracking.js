@@ -9,14 +9,12 @@ const RESPONSE = {
 };
 
 function promptBeginTracking({ servicesManager, extensionManager }, ctx, evt) {
-  const { uiViewportDialogService } = servicesManager.services;
-  const { viewportId, StudyInstanceUID, SeriesInstanceUID } = evt;
+  const { StudyInstanceUID, SeriesInstanceUID, viewportId } = evt;
 
   return new Promise(async function (resolve, reject) {
-    let promptResult = await _askTrackMeasurements(uiViewportDialogService, viewportId);
-
+    // Directly resolve with the desired response
     resolve({
-      userResponse: promptResult,
+      userResponse: RESPONSE.SET_STUDY_AND_SERIES,
       StudyInstanceUID,
       SeriesInstanceUID,
       viewportId,
