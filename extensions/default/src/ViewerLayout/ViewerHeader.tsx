@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 
-import { ErrorBoundary, UserPreferences, AboutModal, Header, useModal } from '@ohif/ui';
+import { ErrorBoundary, UserPreferences, AboutModal, Header, useModal, Button } from '@ohif/ui';
 import i18n from '@ohif/i18n';
 import { hotkeys } from '@ohif/core';
 import { useAppConfig } from '@state';
@@ -98,6 +98,9 @@ function ViewerHeader({ hotkeysManager, extensionManager, servicesManager }) {
       },
     });
   }
+  const onExitButtonClick = () => {
+    window.close();
+  };
 
   return (
     <Header
@@ -107,8 +110,14 @@ function ViewerHeader({ hotkeysManager, extensionManager, servicesManager }) {
       WhiteLabeling={appConfig.whiteLabeling}
     >
       <ErrorBoundary context="Primary Toolbar">
-        <div className="relative flex justify-center">
+        <div className="relative flex w-full items-center justify-center">
           <Toolbar servicesManager={servicesManager} />
+          <Button
+            className="absolute right-0 mr-4"
+            onClick={onExitButtonClick}
+          >
+            Exit
+          </Button>
         </div>
       </ErrorBoundary>
     </Header>
