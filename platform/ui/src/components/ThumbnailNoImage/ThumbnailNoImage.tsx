@@ -78,14 +78,14 @@ const ThumbnailNoImage = ({
             />
           </div>
           <div className="flex flex-row">
-            {canReject && (
+            {/* {canReject && (
               <Icon
                 name="old-trash"
                 style={{ minWidth: '12px' }}
                 className="ml-4 w-3 text-red-500"
                 onClick={onReject}
               />
-            )}
+            )} */}
             <div className="ml-4 break-all text-base text-white">{description}</div>
           </div>
         </div>

@@ -17,7 +17,7 @@ const { log } = OHIF;
  * @param options Naturalized DICOM JSON headers to merge into the displaySet.
  *
  */
-const _generateReport = (measurementData, additionalFindingTypes, options = {}) => {
+const _generateReport = (measurementData, additionalFindingTypes, options = {}, user) => {
   const filteredToolState = getFilteredCornerstoneToolState(
     measurementData,
     additionalFindingTypes
@@ -36,6 +36,21 @@ const _generateReport = (measurementData, additionalFindingTypes, options = {}) 
   // https://dicom.innolitics.com/ciods/nm-image/sop-common/00080005
   if (typeof dataset.SpecificCharacterSet === 'undefined') {
     dataset.SpecificCharacterSet = 'ISO_IR 192';
+  }
+
+  if (user) {
+    dataset.AuthorObserverSequence = [{
+      PersonName: user.name,
+      PersonIdentificationCodeSequence: [{
+        CodeValue: user.id,
+        CodingSchemeDesignator: "99LOCAL"
+      }],
+      AuthorObserverTypeCodeSequence: [{
+        CodeValue: "AUT",
+        CodingSchemeDesignator: "DCM",
+        CodeMeaning: "Author"
+      }]
+    }];
   }
   return dataset;
 };
@@ -72,6 +87,7 @@ const commandsModule = ({}) => {
       measurementData,
       dataSource,
       additionalFindingTypes,
+      user = {name : "John Patil", id : 1},
       options = {},
     }) => {
       // Use the @cornerstonejs adapter for converting to/from DICOM
@@ -84,8 +100,8 @@ const commandsModule = ({}) => {
       }
 
       try {
-        const naturalizedReport = _generateReport(measurementData, additionalFindingTypes, options);
-
+        const naturalizedReport = _generateReport(measurementData, additionalFindingTypes, options, user );
+        console.log("---naturalizedReport-----",naturalizedReport );
         const { StudyInstanceUID, ContentSequence } = naturalizedReport;
         // The content sequence has 5 or more elements, of which
         // the `[4]` element contains the annotation data, so this is
