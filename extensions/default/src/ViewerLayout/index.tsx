@@ -6,6 +6,8 @@ import { ServicesManager, HangingProtocolService, CommandsManager } from '@ohif/
 import { useAppConfig } from '@state';
 import ViewerHeader from './ViewerHeader';
 import SidePanelWithServices from '../Components/SidePanelWithServices';
+import Cookies from 'js-cookie';
+
 
 function ViewerLayout({
   // From Extension Module Params
@@ -38,6 +40,16 @@ function ViewerLayout({
       document.body.classList.remove('bg-black');
       document.body.classList.remove('overflow-hidden');
     };
+  }, []);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const sessionToken = Cookies.get('__Secure-next-auth.session-token.0');
+      console.log("------sessionToken------", sessionToken );
+
+    };
+
+    fetchUser();
   }, []);
 
   const getComponent = id => {
