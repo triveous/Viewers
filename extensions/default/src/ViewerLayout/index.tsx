@@ -44,8 +44,8 @@ function ViewerLayout({
 
   useEffect(() => {
     const fetchUser = async () => {
-      const sessionToken = Cookies.get('__Secure-next-auth.session-token.0');
-      console.log("------sessionToken------", sessionToken );
+      const storedData = JSON.parse(localStorage.getItem('ohif-viewer-user-details') || '{}');
+      console.log("------sessionToken------", storedData );
 
     };
 
