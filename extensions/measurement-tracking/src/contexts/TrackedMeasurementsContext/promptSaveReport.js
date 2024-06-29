@@ -13,6 +13,8 @@ function promptSaveReport({ servicesManager, commandsManager, extensionManager }
   let displaySetInstanceUIDs;
 
   return new Promise(async function (resolve, reject) {
+    const userJson = localStorage.getItem('ohif-viewer-user-details');
+    const user = userJson ? JSON.parse(userJson) : null;
     // TODO: Fallback if (uiDialogService) {
     const promptResult = await createReportDialogPrompt(uiDialogService, {
       extensionManager,
@@ -45,6 +47,7 @@ function promptSaveReport({ servicesManager, commandsManager, extensionManager }
               SeriesDescription,
               SeriesNumber,
             },
+            user : user
           },
           'CORNERSTONE_STRUCTURED_REPORT'
         );

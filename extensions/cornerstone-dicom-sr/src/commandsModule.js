@@ -87,7 +87,7 @@ const commandsModule = ({}) => {
       measurementData,
       dataSource,
       additionalFindingTypes,
-      user = {name : "John Patil", id : 1},
+      user,
       options = {},
     }) => {
       // Use the @cornerstonejs adapter for converting to/from DICOM
