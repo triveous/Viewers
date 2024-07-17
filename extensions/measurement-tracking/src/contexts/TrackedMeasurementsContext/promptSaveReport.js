@@ -15,6 +15,7 @@ function promptSaveReport({ servicesManager, commandsManager, extensionManager }
   return new Promise(async function (resolve, reject) {
     const userJson = localStorage.getItem('ohif-viewer-user-details');
     const user = userJson ? JSON.parse(userJson) : null;
+    console.log("-----window.data----", window.data );
     console.log("user---------", user);
 
     const receivedData = JSON.parse(sessionStorage.getItem('popupData'));
