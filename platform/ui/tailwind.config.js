@@ -23,7 +23,7 @@ module.exports = {
       white: '#fff',
       initial: 'initial',
       inherit: 'inherit',
-
+      bordergrey : '#DBDBDA',
       aqua: {
         pale: '#7bb2ce',
       },
@@ -43,7 +43,7 @@ module.exports = {
       },
 
       secondary: {
-        light: '#3a3f99',
+        light: '#fff',
         main: '#2b166b',
         dark: '#041c4a',
         active: '#1f1f27',

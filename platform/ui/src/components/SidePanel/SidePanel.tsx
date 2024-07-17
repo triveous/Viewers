@@ -37,7 +37,7 @@ const styleMap = {
 };
 
 const baseClasses =
-  'transition-all duration-300 ease-in-out bg-black border-black justify-start box-content flex flex-col';
+  'transition-all duration-300 ease-in-out bg-white border-black justify-start box-content flex flex-col';
 
 const classesMap = {
   open: {
@@ -111,7 +111,7 @@ const getTabClassNames = (
   tabIndex: number,
   isActiveTab: boolean
 ) =>
-  classnames('h-[28px] mb-[2px] cursor-pointer text-white bg-black', {
+  classnames('h-[28px] mb-[2px] cursor-pointer text-white bg-white', {
     'hover:text-primary-active': !isActiveTab,
     'rounded-l': tabIndex % numColumns === 0,
     'rounded-r': (tabIndex + 1) % numColumns === 0 || tabIndex === numTabs - 1,
@@ -171,7 +171,7 @@ const SidePanel = ({ side, className, activeTabIndex: activeTabIndexProp, tabs, 
       <>
         <div
           className={classnames(
-            'bg-secondary-dark flex h-[28px] w-full cursor-pointer items-center rounded-md',
+            'bg-secondary-light flex h-[28px] w-full cursor-pointer items-center rounded-md',
             side === 'left' ? 'justify-end pr-2' : 'justify-start pl-2'
           )}
           onClick={() => {

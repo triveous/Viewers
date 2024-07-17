@@ -22,15 +22,31 @@ function initDefaultToolGroup(extensionManager, toolGroupService, commandsManage
       { toolName: toolNames.StackScrollMouseWheel, bindings: [] },
     ],
     passive: [
-      { toolName: toolNames.Length },
-      {
-        toolName: toolNames.ArrowAnnotate,
+      { toolName: toolNames.Length,
         configuration: {
-          getTextCallback: (callback, eventDetails) =>
+          getTextCallback: (callback, eventDetails) => {
+            console.log('getTextCallback  b l');
             commandsManager.runCommand('arrowTextCallback', {
               callback,
               eventDetails,
+            })},
+
+          changeTextCallback: (data, eventDetails, callback) =>
+            commandsManager.runCommand('arrowTextCallback', {
+              callback,
+              data,
+              eventDetails,
             }),
+        }, },
+      {
+        toolName: toolNames.ArrowAnnotate,
+        configuration: {
+          getTextCallback: (callback, eventDetails) => {
+            console.log('getTextCallback  b');
+            commandsManager.runCommand('arrowTextCallback', {
+              callback,
+              eventDetails,
+            })},
 
           changeTextCallback: (data, eventDetails, callback) =>
             commandsManager.runCommand('arrowTextCallback', {
@@ -152,15 +168,32 @@ function initMPRToolGroup(extensionManager, toolGroupService, commandsManager) {
       { toolName: toolNames.StackScrollMouseWheel, bindings: [] },
     ],
     passive: [
-      { toolName: toolNames.Length },
-      {
-        toolName: toolNames.ArrowAnnotate,
+      { toolName: toolNames.Length,
         configuration: {
-          getTextCallback: (callback, eventDetails) =>
+          getTextCallback: (callback, eventDetails) => {
+            console.log('getTextCallback  c');
             commandsManager.runCommand('arrowTextCallback', {
               callback,
               eventDetails,
+            })},
+
+          changeTextCallback: (data, eventDetails, callback) =>
+            commandsManager.runCommand('arrowTextCallback', {
+              callback,
+              data,
+              eventDetails,
             }),
+        },
+       },
+      {
+        toolName: toolNames.ArrowAnnotate,
+        configuration: {
+          getTextCallback: (callback, eventDetails) => {
+            console.log('getTextCallback  c');
+            commandsManager.runCommand('arrowTextCallback', {
+              callback,
+              eventDetails,
+            })},
 
           changeTextCallback: (data, eventDetails, callback) =>
             commandsManager.runCommand('arrowTextCallback', {

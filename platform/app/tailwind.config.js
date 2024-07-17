@@ -42,7 +42,7 @@ module.exports = {
       primary: {
         light: '#5acce6',
         main: '#0944b3',
-        dark: '#090c29',
+        dark: '#fff',
         active: '#348cfd',
       },
 
@@ -55,8 +55,8 @@ module.exports = {
 
       secondary: {
         light: '#3a3f99',
-        main: '#2b166b',
-        dark: '#041c4a',
+        main: '#fff',
+        dark: '#FFFFFF',
         active: '#1f1f27',
       },
 
@@ -220,7 +220,7 @@ module.exports = {
     },
     borderColor: theme => ({
       ...theme('colors'),
-      DEFAULT: theme('colors.gray.300', 'currentColor'),
+      DEFAULT: theme('colors.gray.900', 'currentColor'),
     }),
     boxShadow: {
       xs: '0 0 0 1px rgba(0, 0, 0, 0.05)',
