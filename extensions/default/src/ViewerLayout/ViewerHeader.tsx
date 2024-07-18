@@ -11,6 +11,40 @@ import Toolbar from '../Toolbar/Toolbar';
 
 const { availableLanguages, defaultLanguage, currentLanguage } = i18n;
 
+const changeStatus = async (
+  url: string,
+  token: any,
+  taskId: string,
+  userId: string,
+  action: string
+) => {
+  try {
+    const response = await fetch(
+      `${url}/contributor/be/patient/record/assign/user/${userId}?action=${action}`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: taskId }),
+      }
+    );
+
+    if (response.status == 404) {
+      console.error("-----no data found------", response.status);
+      return response.json();
+    }
+    if (response.status !== 202) {
+      throw new Error("Failed to post data");
+    }
+    return response.json();
+  } catch (error) {
+    console.error("Error posting data:", error);
+    throw new Error("Failed to post data");
+  }
+};
+
 function ViewerHeader({ hotkeysManager, extensionManager, servicesManager }) {
   const [appConfig] = useAppConfig();
   const navigate = useNavigate();
@@ -98,8 +132,11 @@ function ViewerHeader({ hotkeysManager, extensionManager, servicesManager }) {
       },
     });
   }
-  const onExitButtonClick = () => {
-    window.close();
+  const onExitButtonClick = async () => {
+    const dataJson = localStorage.getItem('ohif-viewer-user-details');
+    const data = dataJson ? JSON.parse(dataJson) : null;
+    await changeStatus(data.url, data.token, data.taskId, data.userId, "annotator_submitted");
+    // window.close();
   };
 
   return (
