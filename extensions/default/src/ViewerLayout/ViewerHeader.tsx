@@ -135,6 +135,7 @@ function ViewerHeader({ hotkeysManager, extensionManager, servicesManager }) {
   const onExitButtonClick = async () => {
     const dataJson = localStorage.getItem('ohif-viewer-user-details');
     const data = dataJson ? JSON.parse(dataJson) : null;
+    console.log("----data----", data, dataJson );
     await changeStatus(data.url, data.token, data.taskId, data.userId, "annotator_submitted");
     // window.close();
   };
