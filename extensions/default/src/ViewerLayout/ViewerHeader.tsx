@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
@@ -49,6 +49,19 @@ function ViewerHeader({ hotkeysManager, extensionManager, servicesManager }) {
   const [appConfig] = useAppConfig();
   const navigate = useNavigate();
   const location = useLocation();
+  const [info, setInfo] = useState(null);
+
+  useEffect(() => {
+    const handleMessage = (event) => {
+      setInfo(event.data);
+    };
+
+    window.addEventListener("message", handleMessage);
+
+    return () => {
+      window.removeEventListener("message", handleMessage);
+    };
+  }, []);
 
   const onClickReturnButton = () => {
     const { pathname } = location;
@@ -133,18 +146,10 @@ function ViewerHeader({ hotkeysManager, extensionManager, servicesManager }) {
     });
   }
   const onExitButtonClick = async () => {
+    // solution 1
     const dataJson = localStorage.getItem('ohif-viewer-user-details');
     const data = dataJson ? JSON.parse(dataJson) : null;
-    console.log("----data----", data, dataJson);
-
-    if (window.opener && window.opener.data) {
-      const popupData = window.opener.data;
-      console.log("---popupData----", popupData);
-
-      await changeStatus(popupData.url, popupData.token, popupData.taskId, popupData.userId, "annotator_submitted");
-    } else {
-      console.error("No popup data found.");
-    }
+    console.log("----data----", info, data, dataJson);
 
     // window.close();
   };
