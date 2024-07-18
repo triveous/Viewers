@@ -71,7 +71,7 @@ const ThumbnailNoImage = ({
                 {modality}
               </div>
             </Tooltip>
-            <span className="ml-4 text-base text-blue-300">{seriesDate}</span>
+            <span className="ml-4 text-base text-black">{seriesDate}</span>
             <DisplaySetMessageListTooltip
               messages={messages}
               id={`display-set-tooltip-${displaySetInstanceUID}`}
@@ -86,7 +86,7 @@ const ThumbnailNoImage = ({
                 onClick={onReject}
               />
             )} */}
-            <div className="ml-4 break-all text-base text-white">{description}</div>
+            <div className="ml-4 break-all text-base text-black">{description}</div>
           </div>
         </div>
       </div>

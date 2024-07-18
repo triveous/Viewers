@@ -121,7 +121,7 @@ export default function CreateReportDialogPrompt(uiDialogService, { extensionMan
                   autoFocus
                   label="Enter the report name"
                   labelClassName="text-white text-[14px] leading-[1.2]"
-                  className="border-primary-main bg-black"
+                  className="border-primary-main bg-white text-black"
                   type="text"
                   value={value.label}
                   onChange={onChangeHandler}

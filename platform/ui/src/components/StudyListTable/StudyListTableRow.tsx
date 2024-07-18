@@ -46,7 +46,7 @@ const StudyListTableRow = props => {
                       <td
                         key={index}
                         className={classnames(
-                          'truncate px-4 py-2 text-base',
+                          'truncate px-4 py-2 text-base text-black',
                           { 'border-secondary-light border-b': !isExpanded },
                           getGridWidthClass(gridCol) || ''
                         )}

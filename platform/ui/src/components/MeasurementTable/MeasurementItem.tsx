@@ -35,7 +35,7 @@ const MeasurementItem = ({
   return (
     <div
       className={classnames(
-        'group flex w-[200px] cursor-pointer border border-transparent bg-black outline-none transition duration-300',
+        'group flex w-[200px] cursor-pointer border border-transparent bg-white outline-none transition duration-300',
         {
           'border-primary-light overflow-hidden rounded': isActive,
         }
@@ -55,25 +55,25 @@ const MeasurementItem = ({
       >
         {index}
       </div>
-      <div className=" w-[200px] ">
-        <div className="relative flex w-[200px] flex-1 flex-col px-2 py-1">
-          <span className="text-primary-light mb-1 w-[200px] text-base">{label}</span>
+      <div className=" w-full bg-white p-2">
+        <div className="relative flex w-full flex-1 flex-col px-2 py-1">
+          <span className="text-black mb-1 w-full text-base ">{label}</span>
           {displayText.map((line, i) => (
             <span
               key={i}
-              className="border-primary-light w-[200px] whitespace-normal break-words border-l pl-2 text-base text-white"
+              className="border-primary-light w-full whitespace-normal break-words  pl-2 text-base text-black"
               dangerouslySetInnerHTML={{ __html: line }}
             ></span>
           ))}
         </div>
         <div className="flex gap-2 pl-2 pt-2">
           <Icon
-            className={classnames(' w-4 cursor-pointer text-white transition duration-300')}
+            className={classnames(' w-4 cursor-pointer text-black transition duration-300')}
             name="pencil"
             onClick={onEditHandler}
           />
           <Icon
-            className={classnames(' w-4 cursor-pointer text-white transition duration-300')}
+            className={classnames(' w-4 cursor-pointer text-black transition duration-300')}
             name="old-trash"
             onClick={onDeleteHandler}
           />

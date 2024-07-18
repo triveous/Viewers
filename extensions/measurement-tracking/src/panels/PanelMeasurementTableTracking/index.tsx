@@ -85,10 +85,10 @@ const SearchBar = ({ onSelectHandler }) => {
       <div className="h-[100%] w-[460px]">
         <Input
           label="Enter your label"
-          labelClassName="text-white grow text-[14px] leading-[1.2]"
+          labelClassName="text-black grow text-[14px] leading-[1.2] bg-white"
           autoFocus
           id="annotation"
-          className="border-primary-main bg-black"
+          className="border-primary-main bg-white text-black"
           type="text"
           value={searchTerm}
           onChange={e => handleChange(e)}
@@ -103,7 +103,7 @@ const SearchBar = ({ onSelectHandler }) => {
             data?.map((item, index) => {
               return (
                 <div
-                  className="border- p-2 text-sm text-white hover:bg-black focus:bg-black"
+                  className="border- p-2 text-sm text-black hover:bg-black focus:bg-black"
                   key={index}
                   onClick={e => {
                     setActive(false);
@@ -351,7 +351,7 @@ function PanelMeasurementTableTracking({ servicesManager, extensionManager }) {
         },
         body: ({ value, setValue }) => {
           return (
-            <div className="flex w-full flex-col gap-5 text-white">
+            <div className="flex w-full flex-col gap-5 text-black">
               <div>Are you sure ?</div>
             </div>
           );
