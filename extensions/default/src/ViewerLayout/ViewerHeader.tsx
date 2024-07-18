@@ -135,8 +135,17 @@ function ViewerHeader({ hotkeysManager, extensionManager, servicesManager }) {
   const onExitButtonClick = async () => {
     const dataJson = localStorage.getItem('ohif-viewer-user-details');
     const data = dataJson ? JSON.parse(dataJson) : null;
-    console.log("----data----", data, dataJson );
-    await changeStatus(data.url, data.token, data.taskId, data.userId, "annotator_submitted");
+    console.log("----data----", data, dataJson);
+
+    if (window.opener && window.opener.data) {
+      const popupData = window.opener.data;
+      console.log("---popupData----", popupData);
+
+      await changeStatus(popupData.url, popupData.token, popupData.taskId, popupData.userId, "annotator_submitted");
+    } else {
+      console.error("No popup data found.");
+    }
+
     // window.close();
   };
 
