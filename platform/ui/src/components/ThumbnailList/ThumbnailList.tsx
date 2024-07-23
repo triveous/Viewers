@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 
 import Thumbnail from '../Thumbnail';
@@ -13,12 +13,37 @@ const ThumbnailList = ({
   onClickUntrack,
   activeDisplaySetInstanceUIDs = [],
 }) => {
+  const latestThumbnail = thumbnails
+    .filter(thumb => thumb.modality === 'SR')
+    .reduce(
+      (max, current) => {
+        return current.seriesNumber > max.seriesNumber ? current : max;
+      },
+      { seriesNumber: -Infinity }
+    );
+  const everythingExceptSRThmbnails = thumbnails.filter(thumb => thumb.modality !== 'SR');
+  const updatedThumbnails = [...everythingExceptSRThmbnails];
+
+  const hasEffectRun = useRef(false);
+  useEffect(() => {
+    if (!hasEffectRun.current) {
+      const timer = setTimeout(() => {
+        if (latestThumbnail && latestThumbnail.displaySetInstanceUID) {
+          onThumbnailDoubleClick(latestThumbnail.displaySetInstanceUID);
+        }
+        hasEffectRun.current = true;
+      }, 2000); // Adjust the delay as necessary
+
+      return () => clearTimeout(timer);
+    }
+  }, [latestThumbnail, onThumbnailDoubleClick]);
+
   return (
     <div
       id="ohif-thumbnail-list"
       className="ohif-scrollbar study-min-height overflow-y-hidden bg-white py-3"
     >
-      {thumbnails.map(
+      {updatedThumbnails.map(
         ({
           displaySetInstanceUID,
           description,

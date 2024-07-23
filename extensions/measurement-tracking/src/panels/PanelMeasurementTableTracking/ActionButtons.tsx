@@ -17,14 +17,16 @@ function ActionButtons({ onExportClick, onCreateReportClick, disabled }) {
       >
         {t('Export')}
       </Button> */}
-      { !disabled && <Button
-        onClick={onCreateReportClick}
-        type={ButtonEnums.type.secondary}
-        size={ButtonEnums.size.large}
-        disabled={disabled}
-      >
-        {t('Save Annotations')}
-      </Button>}
+      {!disabled && (
+        <Button
+          onClick={onCreateReportClick}
+          type={ButtonEnums.type.secondary}
+          size={ButtonEnums.size.medium}
+          disabled={disabled}
+        >
+          {t('Save Annotations')}
+        </Button>
+      )}
     </React.Fragment>
   );
 }

@@ -9,7 +9,7 @@ const NavBar = ({ className, children, isSticky }) => {
   return (
     <div
       className={classnames(
-        'bg-secondary-dark z-20 flex flex-row items-center border-b-2 border-black px-1',
+        'border-b-1 z-20 flex flex-row items-center border-black bg-white px-1',
         isSticky && stickyClasses,
         !isSticky && notStickyClasses,
         className

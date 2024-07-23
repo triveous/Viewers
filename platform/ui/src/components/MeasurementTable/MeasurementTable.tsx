@@ -19,8 +19,10 @@ const MeasurementTable = ({ data, title, onClick, onDelete, onEdit, servicesMana
 
   return (
     <div>
-      <div className="bg-white flex justify-between px-2 py-1">
-        <span className="text-base font-bold uppercase tracking-widest text-white">{t(title)}</span>
+      <div className="flex justify-between border-t-[#DBDADA] bg-white px-2 py-1">
+        {/* <span className=" text-base font-bold uppercase tracking-widest text-black">
+          {t(title)}
+        </span> */}
         <span className="text-base font-bold text-white">{amount}</span>
       </div>
       <div className="ohif-scrollbar max-h-112 overflow-hidden">
@@ -41,7 +43,7 @@ const MeasurementTable = ({ data, title, onClick, onDelete, onEdit, servicesMana
           ))}
         {data.length === 0 && (
           <div className="group flex cursor-default border border-transparent bg-white transition duration-300">
-            <div className="bg-white text-primary-light group-hover:bg-secondary-main w-6 py-1 text-center text-base transition duration-300"></div>
+            <div className="text-primary-light group-hover:bg-secondary-main w-6 bg-white py-1 text-center text-base transition duration-300"></div>
             <div className="flex flex-1 items-center justify-between px-2 py-4">
               <span className="text-primary-light mb-1 flex flex-1 items-center text-base">
                 {t('No tracked Annotations')}

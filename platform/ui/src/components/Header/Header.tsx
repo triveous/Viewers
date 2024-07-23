@@ -30,7 +30,7 @@ function Header({
 
   return (
     <NavBar
-      className="justify-between border-b-2 border-black-1"
+      className=" border-b-1 justify-between border-black"
       isSticky={isSticky}
     >
       <div className="flex flex-1 justify-between">

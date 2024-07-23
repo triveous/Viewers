@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 
 const StudySummary = ({ date, modality, description }) => {
   return (
-    <div className="p-2">
+    <div className="bg-[#F5F8FF] p-4">
       <div className="leading-none">
-        <span className="mr-2 text-base text-white">{date}</span>
+        <span className="mr-2 text-base text-black">{date}</span>
         <span className="bg-common-bright rounded-sm px-1 text-base font-bold text-black">
           {modality}
         </span>

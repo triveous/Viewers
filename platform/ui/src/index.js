@@ -117,6 +117,7 @@ export {
   WindowLevelMenuItem,
   ImageScrollbar,
   ViewportOverlay,
+  LhcFormComponent
 } from './components';
 
 /** These are mostly used in the docs */

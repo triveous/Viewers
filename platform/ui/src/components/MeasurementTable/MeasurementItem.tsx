@@ -19,6 +19,7 @@ const MeasurementItem = ({
 
   const onEditHandler = event => {
     event.stopPropagation();
+    localStorage.setItem('edit', 'true');
     onEdit({ uid, isActive, event });
   };
 
@@ -57,7 +58,7 @@ const MeasurementItem = ({
       </div>
       <div className=" w-full bg-white p-2">
         <div className="relative flex w-full flex-1 flex-col px-2 py-1">
-          <span className="text-black mb-1 w-full text-base ">{label}</span>
+          {/* <span className="mb-1 w-full text-base text-black ">{label}</span> */}
           {displayText.map((line, i) => (
             <span
               key={i}

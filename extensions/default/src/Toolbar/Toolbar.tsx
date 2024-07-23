@@ -29,7 +29,7 @@ export default function Toolbar({ servicesManager }) {
           // This allows for the individual items to be included in other UI components where perhaps alternative margins are desired.
           <div
             key={id}
-            className={classnames('mr-1')}
+            className={classnames('mr-1 text-black')}
           >
             <Component
               id={id}

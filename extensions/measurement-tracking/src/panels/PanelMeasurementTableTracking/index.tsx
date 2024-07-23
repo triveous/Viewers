@@ -9,6 +9,7 @@ import {
   ButtonEnums,
   Icon,
   ProgressLoadingBar,
+  LhcFormComponent,
 } from '@ohif/ui';
 import { DicomMetadataStore, utils } from '@ohif/core';
 import { useDebounce } from '@hooks';
@@ -40,7 +41,6 @@ const SearchBar = ({ onSelectHandler }) => {
 
     return () => clearTimeout(timeoutId);
   }, [searchTerm]);
-  console.log('----process.env.REACT_API_URL---', process.env.REACT_API_URL);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -50,9 +50,7 @@ const SearchBar = ({ onSelectHandler }) => {
         }
         // setLoading(true);
         const response = await fetch(
-          `${
-            process.env.REACT_API_URL ?? 'https://3.109.154.173/be'
-          }/ontology/search?searchTerm=${debouncedSearchTerm}&page=1&pageSize=100`
+          `https://tx.fhir.org/r4/ValueSet/$expand?url=http://snomed.info/sct?fhir_vs&filter=cancer&filter=${searchTerm}&_format=application%2Fjson&count=7`
         );
 
         if (!response.ok) {
@@ -60,7 +58,7 @@ const SearchBar = ({ onSelectHandler }) => {
         }
         // setLoading(false);
         const data = await response.json();
-        setData(data);
+        setData(data.expansion.contains);
 
         setActive(true);
       } catch (error) {
@@ -81,8 +79,8 @@ const SearchBar = ({ onSelectHandler }) => {
   };
 
   return (
-    <div className="h-[100%] w-[460px]">
-      <div className="h-[100%] w-[460px]">
+    <div className="h-[100%] w-full">
+      <div className="h-[100%] w-full">
         <Input
           label="Enter your label"
           labelClassName="text-black grow text-[14px] leading-[1.2] bg-white"
@@ -95,7 +93,7 @@ const SearchBar = ({ onSelectHandler }) => {
         />
       </div>
       {active && (
-        <div className="max-h-[250px] min-h-[52px] w-[460px] overflow-y-auto ">
+        <div className="max-h-[250px] min-h-[52px] w-full overflow-y-auto ">
           {loading ? (
             <LoadingBar />
           ) : (
@@ -103,17 +101,16 @@ const SearchBar = ({ onSelectHandler }) => {
             data?.map((item, index) => {
               return (
                 <div
-                  className="border- p-2 text-sm text-black hover:bg-black focus:bg-black"
+                  className="border- p-2 text-sm text-black hover:bg-[#DBDBDA] focus:bg-[#DBDBDA]"
                   key={index}
                   onClick={e => {
                     setActive(false);
-                    setSearchTerm(item.value);
+                    setSearchTerm(item.display);
                     setData([]);
                     onSelectHandler(e, item);
                   }}
                 >
-                  <div className="whitespace-normal break-words">{item.label}</div>
-                  <div className="whitespace-normal break-words text-blue-300">{item.value}</div>
+                  <div className="whitespace-normal break-words">{item.display}</div>
                 </div>
               );
             })
@@ -151,6 +148,9 @@ function PanelMeasurementTableTracking({ servicesManager, extensionManager }) {
   const [displayMeasurements, setDisplayMeasurements] = useState([]);
   const measurementsPanelRef = useRef(null);
   const [measurementUpdated, setMeasurementUpdated] = useState(false);
+  const [ans, setAns] = useState({});
+  // const isEdit = searchParams.get('edit') === 'true';
+
   useEffect(() => {
     const measurements = measurementService.getMeasurements();
     const filteredMeasurements = measurements.filter(
@@ -300,11 +300,11 @@ function PanelMeasurementTableTracking({ servicesManager, extensionManager }) {
         },
         body: ({ value, setValue }) => {
           return (
-            <div className="flex w-[460px] flex-col gap-5">
+            <div className="flex w-full flex-col gap-5">
               <SearchBar
                 onSelectHandler={(e, selected) => {
                   e.persist();
-                  setValue({ label: selected.label, description: selected.value });
+                  setValue({ label: selected.display, description: selected.display });
                 }}
               />
             </div>
@@ -382,6 +382,42 @@ function PanelMeasurementTableTracking({ servicesManager, extensionManager }) {
   const additionalFindings = displayMeasurements.filter(
     dm => dm.measurementType === measurementService.VALUE_TYPES.POINT
   );
+  const data = {
+    resourceType: 'Questionnaire',
+    id: '5497673',
+    meta: {
+      versionId: '1',
+      lastUpdated: '2024-07-22T10:02:56.778-04:00',
+    },
+    title: 'New Form',
+    status: 'draft',
+    item: [
+      {
+        extension: [
+          {
+            url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
+            valueCodeableConcept: {
+              coding: [
+                {
+                  system: 'http://hl7.org/fhir/questionnaire-item-control',
+                  code: 'autocomplete',
+                  display: 'Auto-complete',
+                },
+              ],
+            },
+          },
+          {
+            url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-preferredTerminologyServer',
+            valueUrl: 'https://tx.fhir.org/r4',
+          },
+        ],
+        linkId: '5339378896031',
+        text: 'Select Ontologies',
+        type: 'choice',
+        answerValueSet: 'http://snomed.info/sct?fhir_vs&filter=diabetes',
+      },
+    ],
+  };
 
   return (
     <>
@@ -420,6 +456,16 @@ function PanelMeasurementTableTracking({ servicesManager, extensionManager }) {
           }
         />
       </div>
+      {/* {localStorage.getItem('edit') === 'true' && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+          <div className="w-full max-w-md rounded bg-white p-6 shadow-lg">
+            <LhcFormComponent
+              questionaireObject={data}
+              setUserData={setAns}
+            />
+          </div>
+        </div>
+      )} */}
     </>
   );
 }

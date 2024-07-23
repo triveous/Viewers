@@ -70,7 +70,7 @@ const ThumbnailTracked = ({
         <div
           className={classnames(
             'relative mb-2 flex cursor-pointer flex-col items-center justify-start p-2',
-            isTracked && 'rounded-sm hover:bg-gray-900'
+            isTracked && 'rounded-sm hover:bg-white'
           )}
         >
           <Tooltip
@@ -105,7 +105,7 @@ const ThumbnailTracked = ({
           </Tooltip>
 
           <div
-            className="text-center text-xl leading-tight text-white"
+            className="text-center text-xl leading-tight text-black"
             data-cy={'thumbnail-viewport-labels'}
           >
             {renderViewportLabels()}
