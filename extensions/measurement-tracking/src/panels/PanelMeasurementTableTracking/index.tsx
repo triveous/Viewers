@@ -19,6 +19,40 @@ import debounce from 'lodash.debounce';
 const { downloadCSVReport } = utils;
 const { formatDate } = utils;
 
+const changeStatus = async (
+  url: string,
+  token: any,
+  taskId: string,
+  userId: string,
+  action: string
+) => {
+  try {
+    const response = await fetch(
+      `${url}/contributor/be/patient/record/assign/user/${userId}?action=${action}`,
+      {
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id: taskId }),
+      }
+    );
+
+    if (response.status == 404) {
+      console.error('-----no data found------', response.status);
+      return response.json();
+    }
+    if (response.status !== 202) {
+      throw new Error('Failed to post data');
+    }
+    return response.json();
+  } catch (error) {
+    console.error('Error posting data:', error);
+    throw new Error('Failed to post data');
+  }
+};
+
 const DISPLAY_STUDY_SUMMARY_INITIAL_VALUE = {
   key: undefined, //
   date: '', // '07-Sep-2010',
@@ -147,8 +181,11 @@ function PanelMeasurementTableTracking({ servicesManager, extensionManager }) {
   const [displayMeasurements, setDisplayMeasurements] = useState([]);
   const measurementsPanelRef = useRef(null);
   const [measurementUpdated, setMeasurementUpdated] = useState(false);
-  const [ans, setAns] = useState({});
+  const [readOnly, setReadOnly] = useState(false);
 
+  useEffect(() => {
+    setReadOnly(JSON.parse(localStorage.getItem('readOnly')).readOnly);
+  }, []);
   useEffect(() => {
     const measurements = measurementService.getMeasurements();
     const filteredMeasurements = measurements.filter(
@@ -407,14 +444,28 @@ function PanelMeasurementTableTracking({ servicesManager, extensionManager }) {
       <div className="flex justify-center p-4">
         <ActionButtons
           onExportClick={exportReport}
-          onCreateReportClick={() => {
+          onCreateReportClick={async () => {
+            // solution 1
+            const dataJson = localStorage.getItem('ohif-viewer-user-details');
+            const data = dataJson ? JSON.parse(dataJson) : null;
+            console.log('----data----', data, dataJson);
+            if (data) {
+              await changeStatus(
+                data.url,
+                data.token,
+                data.taskId,
+                data.userId,
+                'annotator_submitted'
+              );
+            }
             sendTrackedMeasurementsEvent('SAVE_REPORT', {
               viewportId: viewportGrid.activeViewportId,
               isBackupSave: true,
             });
           }}
           disabled={
-            additionalFindings.length === 0 && displayMeasurementsWithoutFindings.length === 0
+            readOnly ||
+            (additionalFindings.length === 0 && displayMeasurementsWithoutFindings.length === 0)
           }
         />
       </div>

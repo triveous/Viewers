@@ -50,6 +50,11 @@ function ViewerHeader({ hotkeysManager, extensionManager, servicesManager }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [info, setInfo] = useState(null);
+  const [readOnly, setReadOnly] = useState(false);
+
+  useEffect(() => {
+    setReadOnly(JSON.parse(localStorage.getItem('readOnly')).readOnly);
+  }, []);
 
   useEffect(() => {
     const handleMessage = event => {
@@ -146,11 +151,6 @@ function ViewerHeader({ hotkeysManager, extensionManager, servicesManager }) {
     });
   }
   const onExitButtonClick = async () => {
-    // solution 1
-    const dataJson = localStorage.getItem('ohif-viewer-user-details');
-    const data = dataJson ? JSON.parse(dataJson) : null;
-    console.log('----data----', info, data, dataJson);
-
     window.close();
   };
 
@@ -163,7 +163,7 @@ function ViewerHeader({ hotkeysManager, extensionManager, servicesManager }) {
     >
       <ErrorBoundary context="Primary Toolbar">
         <div className="relative flex w-full items-center justify-center">
-          <Toolbar servicesManager={servicesManager} />
+          {!readOnly && <Toolbar servicesManager={servicesManager} />}
           <Button
             className="absolute right-0 mr-4"
             onClick={onExitButtonClick}

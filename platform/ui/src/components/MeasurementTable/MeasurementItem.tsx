@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
@@ -16,6 +16,11 @@ const MeasurementItem = ({
   item,
 }) => {
   const [isHovering, setIsHovering] = useState(false);
+  const [readOnly, setReadOnly] = useState(false);
+
+  useEffect(() => {
+    setReadOnly(JSON.parse(localStorage.getItem('readOnly')).readOnly);
+  }, []);
 
   const onEditHandler = event => {
     event.stopPropagation();
@@ -67,18 +72,20 @@ const MeasurementItem = ({
             ></span>
           ))}
         </div>
-        <div className="flex gap-2 pl-2 pt-2">
-          <Icon
-            className={classnames(' w-4 cursor-pointer text-black transition duration-300')}
-            name="pencil"
-            onClick={onEditHandler}
-          />
-          <Icon
-            className={classnames(' w-4 cursor-pointer text-black transition duration-300')}
-            name="old-trash"
-            onClick={onDeleteHandler}
-          />
-        </div>
+        {!readOnly && (
+          <div className="flex gap-2 pl-2 pt-2">
+            <Icon
+              className={classnames(' w-4 cursor-pointer text-black transition duration-300')}
+              name="pencil"
+              onClick={onEditHandler}
+            />
+            <Icon
+              className={classnames(' w-4 cursor-pointer text-black transition duration-300')}
+              name="old-trash"
+              onClick={onDeleteHandler}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
