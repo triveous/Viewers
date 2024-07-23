@@ -22,26 +22,26 @@ const changeStatus = async (
     const response = await fetch(
       `${url}/contributor/be/patient/record/assign/user/${userId}?action=${action}`,
       {
-        method: "PUT",
+        method: 'PUT',
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ id: taskId }),
       }
     );
 
     if (response.status == 404) {
-      console.error("-----no data found------", response.status);
+      console.error('-----no data found------', response.status);
       return response.json();
     }
     if (response.status !== 202) {
-      throw new Error("Failed to post data");
+      throw new Error('Failed to post data');
     }
     return response.json();
   } catch (error) {
-    console.error("Error posting data:", error);
-    throw new Error("Failed to post data");
+    console.error('Error posting data:', error);
+    throw new Error('Failed to post data');
   }
 };
 
@@ -52,14 +52,14 @@ function ViewerHeader({ hotkeysManager, extensionManager, servicesManager }) {
   const [info, setInfo] = useState(null);
 
   useEffect(() => {
-    const handleMessage = (event) => {
+    const handleMessage = event => {
       setInfo(event.data);
     };
 
-    window.addEventListener("message", handleMessage);
+    window.addEventListener('message', handleMessage);
 
     return () => {
-      window.removeEventListener("message", handleMessage);
+      window.removeEventListener('message', handleMessage);
     };
   }, []);
 
@@ -149,9 +149,9 @@ function ViewerHeader({ hotkeysManager, extensionManager, servicesManager }) {
     // solution 1
     const dataJson = localStorage.getItem('ohif-viewer-user-details');
     const data = dataJson ? JSON.parse(dataJson) : null;
-    console.log("----data----", info, data, dataJson);
+    console.log('----data----', info, data, dataJson);
 
-    // window.close();
+    window.close();
   };
 
   return (
