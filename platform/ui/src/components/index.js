@@ -79,10 +79,8 @@ import PanelSection from './PanelSection';
 import AdvancedToolbox from './AdvancedToolbox';
 import InputDoubleRange from './InputDoubleRange';
 import LegacyButtonGroup from './LegacyButtonGroup';
-import LhcFormComponent from './LhcFormComponent/LhcFormComponent';
 
 export {
-  LhcFormComponent,
   AboutModal,
   AdvancedToolbox,
   HotkeyField,

@@ -9,7 +9,6 @@ import {
   ButtonEnums,
   Icon,
   ProgressLoadingBar,
-  LhcFormComponent,
 } from '@ohif/ui';
 import { DicomMetadataStore, utils } from '@ohif/core';
 import { useDebounce } from '@hooks';
@@ -149,7 +148,6 @@ function PanelMeasurementTableTracking({ servicesManager, extensionManager }) {
   const measurementsPanelRef = useRef(null);
   const [measurementUpdated, setMeasurementUpdated] = useState(false);
   const [ans, setAns] = useState({});
-  // const isEdit = searchParams.get('edit') === 'true';
 
   useEffect(() => {
     const measurements = measurementService.getMeasurements();
@@ -382,42 +380,6 @@ function PanelMeasurementTableTracking({ servicesManager, extensionManager }) {
   const additionalFindings = displayMeasurements.filter(
     dm => dm.measurementType === measurementService.VALUE_TYPES.POINT
   );
-  const data = {
-    resourceType: 'Questionnaire',
-    id: '5497673',
-    meta: {
-      versionId: '1',
-      lastUpdated: '2024-07-22T10:02:56.778-04:00',
-    },
-    title: 'New Form',
-    status: 'draft',
-    item: [
-      {
-        extension: [
-          {
-            url: 'http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl',
-            valueCodeableConcept: {
-              coding: [
-                {
-                  system: 'http://hl7.org/fhir/questionnaire-item-control',
-                  code: 'autocomplete',
-                  display: 'Auto-complete',
-                },
-              ],
-            },
-          },
-          {
-            url: 'http://hl7.org/fhir/uv/sdc/StructureDefinition/sdc-questionnaire-preferredTerminologyServer',
-            valueUrl: 'https://tx.fhir.org/r4',
-          },
-        ],
-        linkId: '5339378896031',
-        text: 'Select Ontologies',
-        type: 'choice',
-        answerValueSet: 'http://snomed.info/sct?fhir_vs&filter=diabetes',
-      },
-    ],
-  };
 
   return (
     <>
@@ -456,16 +418,6 @@ function PanelMeasurementTableTracking({ servicesManager, extensionManager }) {
           }
         />
       </div>
-      {/* {localStorage.getItem('edit') === 'true' && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-          <div className="w-full max-w-md rounded bg-white p-6 shadow-lg">
-            <LhcFormComponent
-              questionaireObject={data}
-              setUserData={setAns}
-            />
-          </div>
-        </div>
-      )} */}
     </>
   );
 }
