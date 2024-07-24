@@ -23,8 +23,6 @@ jobs:
           COMMIT_SHA: ${{ github.sha }}
         run: |
           IMAGE_TAG=${COMMIT_SHA::7}
-          docker build -t $DOCKER_HUB_USERNAME/midas-ohif-openresty:latest -f platform/app/.recipes/OpenResty-Orthanc-Keycloak/dockerfile .
-          docker push $DOCKER_HUB_USERNAME/midas-ohif-openresty:latest
           docker build -t $DOCKER_HUB_USERNAME/$DOCKER_HUB_REPOSITORY:central-$IMAGE_TAG -f platform/app/.recipes/Midas/dockerfile-central .
           docker push $DOCKER_HUB_USERNAME/$DOCKER_HUB_REPOSITORY:central-$IMAGE_TAG
           docker build -t $DOCKER_HUB_USERNAME/$DOCKER_HUB_REPOSITORY:hub-$IMAGE_TAG -f platform/app/.recipes/Midas/dockerfile-hub .
