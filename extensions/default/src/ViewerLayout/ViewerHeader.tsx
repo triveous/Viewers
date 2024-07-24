@@ -50,11 +50,12 @@ function ViewerHeader({ hotkeysManager, extensionManager, servicesManager }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [info, setInfo] = useState(null);
-  const [readOnly, setReadOnly] = useState(false);
+  const [readOnly, setReadOnly] = useState(process.env.READ_ONLY_MODE);
 
-  useEffect(() => {
-    setReadOnly(JSON.parse(localStorage.getItem('readOnly')).readOnly);
-  }, []);
+  // useEffect(() => {
+  //   setReadOnly(JSON.parse(localStorage.getItem('readOnly')).readOnly);
+  // }, []);
+  console.log('------------------------------readOnly------', readOnly);
 
   useEffect(() => {
     const handleMessage = event => {

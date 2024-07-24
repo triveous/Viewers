@@ -16,11 +16,11 @@ const MeasurementItem = ({
   item,
 }) => {
   const [isHovering, setIsHovering] = useState(false);
-  const [readOnly, setReadOnly] = useState(false);
+  const [readOnly, setReadOnly] = useState(process.env.READ_ONLY_MODE);
 
-  useEffect(() => {
-    setReadOnly(JSON.parse(localStorage.getItem('readOnly')).readOnly);
-  }, []);
+  // useEffect(() => {
+  //   setReadOnly(JSON.parse(localStorage.getItem('readOnly')).readOnly);
+  // }, []);
 
   const onEditHandler = event => {
     event.stopPropagation();
