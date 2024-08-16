@@ -83,7 +83,7 @@ const SearchBar = ({ onSelectHandler }) => {
         }
         // setLoading(true);
         const response = await fetch(
-          `https://tx.fhir.org/r4/ValueSet/$expand?url=http://snomed.info/sct?fhir_vs&filter=cancer&filter=${searchTerm}&_format=application%2Fjson&count=7`
+          `https://tx.fhir.org/r4/ValueSet/$expand?url=http://snomed.info/sct?fhir_vs&filter=${searchTerm}&_format=application%2Fjson&count=7`
         );
 
         if (!response.ok) {
