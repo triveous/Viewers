@@ -27,7 +27,7 @@ async function createReportAsync({ servicesManager, getReport, reportType = 'mea
     const displaySetInstanceUID = displaySet.displaySetInstanceUID;
 
     uiNotificationService.show({
-      title: 'Create Report',
+      title: 'Annotations Saved',
       message: `${reportType} saved successfully`,
       type: 'success',
     });
@@ -35,7 +35,7 @@ async function createReportAsync({ servicesManager, getReport, reportType = 'mea
     return [displaySetInstanceUID];
   } catch (error) {
     uiNotificationService.show({
-      title: 'Create Report',
+      title: 'Annotations Saved',
       message: error.message || `Failed to store ${reportType}`,
       type: 'error',
     });

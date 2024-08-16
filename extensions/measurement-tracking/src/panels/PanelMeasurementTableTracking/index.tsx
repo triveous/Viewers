@@ -181,11 +181,18 @@ function PanelMeasurementTableTracking({ servicesManager, extensionManager }) {
   const [displayMeasurements, setDisplayMeasurements] = useState([]);
   const measurementsPanelRef = useRef(null);
   const [measurementUpdated, setMeasurementUpdated] = useState(false);
-  const [readOnly, setReadOnly] = useState(process.env.READ_ONLY_MODE);
+  const [readOnly, setReadOnly] = useState(false);
 
   // useEffect(() => {
   //   setReadOnly(JSON.parse(localStorage.getItem('readOnly')).readOnly);
   // }, []);
+  useEffect(() => {
+    if (false && JSON.parse(localStorage.getItem('readOnly'))) {
+      setReadOnly(JSON.parse(localStorage.getItem('readOnly'))?.readOnly);
+    } else {
+      console.log('we are in false....b');
+    }
+  }, []);
   useEffect(() => {
     const measurements = measurementService.getMeasurements();
     const filteredMeasurements = measurements.filter(

@@ -1,4 +1,4 @@
-import { createReportAsync, createReportDialogPrompt } from '@ohif/extension-default';
+import { createReportAsync } from '@ohif/extension-default';
 import getNextSRSeriesNumber from '../../_shared/getNextSRSeriesNumber';
 import RESPONSE from '../../_shared/PROMPT_RESPONSES';
 
@@ -16,53 +16,42 @@ function promptSaveReport({ servicesManager, commandsManager, extensionManager }
     const userJson = localStorage.getItem('ohif-viewer-user-details');
     const user = userJson ? JSON.parse(userJson) : null;
 
-    // TODO: Fallback if (uiDialogService) {
-    const promptResult = await createReportDialogPrompt(uiDialogService, {
-      extensionManager,
+    // Generate a unique SeriesDescription with timestamp
+    const currentTimestamp = new Date().toISOString();
+    const SeriesDescription = `Research Derived Series - ${currentTimestamp}`;
+
+    const SeriesNumber = getNextSRSeriesNumber(displaySetService);
+
+    const dataSources = extensionManager.getDataSources();
+    const dataSource = dataSources[0];
+    const measurements = measurementService.getMeasurements();
+    const trackedMeasurements = measurements.filter(
+      m => trackedStudy === m.referenceStudyUID && trackedSeries.includes(m.referenceSeriesUID)
+    );
+
+    const getReport = async () => {
+      return commandsManager.runCommand(
+        'storeMeasurements',
+        {
+          measurementData: trackedMeasurements,
+          dataSource,
+          additionalFindingTypes: ['ArrowAnnotate'],
+          options: {
+            SeriesDescription,
+            SeriesNumber,
+          },
+          user: user,
+        },
+        'CORNERSTONE_STRUCTURED_REPORT'
+      );
+    };
+    displaySetInstanceUIDs = await createReportAsync({
+      servicesManager,
+      getReport,
     });
 
-    if (promptResult.action === RESPONSE.CREATE_REPORT) {
-      const dataSources = extensionManager.getDataSources();
-      const dataSource = dataSources[0];
-      const measurements = measurementService.getMeasurements();
-      const trackedMeasurements = measurements.filter(
-        m => trackedStudy === m.referenceStudyUID && trackedSeries.includes(m.referenceSeriesUID)
-      );
-
-      const SeriesDescription =
-        // isUndefinedOrEmpty
-        promptResult.value === undefined || promptResult.value === ''
-          ? 'Research Derived Series' // default
-          : promptResult.value; // provided value
-
-      const SeriesNumber = getNextSRSeriesNumber(displaySetService);
-
-      const getReport = async () => {
-        return commandsManager.runCommand(
-          'storeMeasurements',
-          {
-            measurementData: trackedMeasurements,
-            dataSource,
-            additionalFindingTypes: ['ArrowAnnotate'],
-            options: {
-              SeriesDescription,
-              SeriesNumber,
-            },
-            user : user
-          },
-          'CORNERSTONE_STRUCTURED_REPORT'
-        );
-      };
-      displaySetInstanceUIDs = await createReportAsync({
-        servicesManager,
-        getReport,
-      });
-    } else if (promptResult.action === RESPONSE.CANCEL) {
-      // Do nothing
-    }
-
     resolve({
-      userResponse: promptResult.action,
+      userResponse: RESPONSE.CREATE_REPORT,
       createdDisplaySetInstanceUIDs: displaySetInstanceUIDs,
       StudyInstanceUID,
       SeriesInstanceUID,

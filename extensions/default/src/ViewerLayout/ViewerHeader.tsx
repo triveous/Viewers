@@ -49,24 +49,14 @@ function ViewerHeader({ hotkeysManager, extensionManager, servicesManager }) {
   const [appConfig] = useAppConfig();
   const navigate = useNavigate();
   const location = useLocation();
-  const [info, setInfo] = useState(null);
-  const [readOnly, setReadOnly] = useState(process.env.READ_ONLY_MODE);
-
-  // useEffect(() => {
-  //   setReadOnly(JSON.parse(localStorage.getItem('readOnly')).readOnly);
-  // }, []);
-  console.log('------------------------------readOnly------', readOnly);
+  const [readOnly, setReadOnly] = useState(false);
 
   useEffect(() => {
-    const handleMessage = event => {
-      setInfo(event.data);
-    };
-
-    window.addEventListener('message', handleMessage);
-
-    return () => {
-      window.removeEventListener('message', handleMessage);
-    };
+    if (false && JSON.parse(localStorage.getItem('readOnly'))) {
+      setReadOnly(JSON.parse(localStorage.getItem('readOnly'))?.readOnly);
+    } else {
+      console.log('we are in false....');
+    }
   }, []);
 
   const onClickReturnButton = () => {
