@@ -530,6 +530,9 @@ function _mapMeasurementToDisplay(measurement, types, displaySetService) {
     });
     displayText = [...siteText];
   }
+  if (type == 'value_type::point') {
+    displayText = [baseLabel];
+  }
   // if (finding && finding?.text !== label) {
   //   displayText = [finding.text, ...displayText];
   // }
