@@ -16,7 +16,7 @@ const MeasurementItem = ({
   item,
 }) => {
   const [isHovering, setIsHovering] = useState(false);
-  const [readOnly, setReadOnly] = useState(process.env.READ_ONLY_MODE);
+  const [readOnly, setReadOnly] = useState(false);
 
   useEffect(() => {
     if (JSON.parse(localStorage.getItem('readOnly'))) {

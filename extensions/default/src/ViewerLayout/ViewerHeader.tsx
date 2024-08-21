@@ -49,7 +49,7 @@ function ViewerHeader({ hotkeysManager, extensionManager, servicesManager }) {
   const [appConfig] = useAppConfig();
   const navigate = useNavigate();
   const location = useLocation();
-  const [readOnly, setReadOnly] = useState(process.env.READ_ONLY_MODE);
+  const [readOnly, setReadOnly] = useState(false);
 
   useEffect(() => {
     if (JSON.parse(localStorage.getItem('readOnly'))) {
