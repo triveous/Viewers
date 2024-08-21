@@ -181,7 +181,7 @@ function PanelMeasurementTableTracking({ servicesManager, extensionManager }) {
   const [displayMeasurements, setDisplayMeasurements] = useState([]);
   const measurementsPanelRef = useRef(null);
   const [measurementUpdated, setMeasurementUpdated] = useState(false);
-  const [readOnly, setReadOnly] = useState(false);
+  const [readOnly, setReadOnly] = useState(process.env.READ_ONLY_MODE);
 
   // useEffect(() => {
   //   setReadOnly(JSON.parse(localStorage.getItem('readOnly')).readOnly);
