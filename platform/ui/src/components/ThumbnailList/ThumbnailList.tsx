@@ -32,7 +32,7 @@ const ThumbnailList = ({
           onThumbnailDoubleClick(latestThumbnail.displaySetInstanceUID);
         }
         hasEffectRun.current = true;
-      }, 2000); // Adjust the delay as necessary
+      }, 5000); // Adjust the delay as necessary
 
       return () => clearTimeout(timer);
     }
