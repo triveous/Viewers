@@ -181,7 +181,7 @@ function PanelMeasurementTableTracking({ servicesManager, extensionManager }) {
   const [displayMeasurements, setDisplayMeasurements] = useState([]);
   const measurementsPanelRef = useRef(null);
   const [measurementUpdated, setMeasurementUpdated] = useState(false);
-  const [readOnly, setReadOnly] = useState(process.env.READ_ONLY_MODE);
+  const [readOnly, setReadOnly] = useState(false);
 
   // useEffect(() => {
   //   setReadOnly(JSON.parse(localStorage.getItem('readOnly')).readOnly);
@@ -337,7 +337,6 @@ function PanelMeasurementTableTracking({ servicesManager, extensionManager }) {
         title: 'Add Ontology',
         noCloseButton: true,
         value: {
-          label: measurement.label || '',
           description: measurement?.findingSites?.[0]?.text || '',
         },
         body: ({ value, setValue }) => {
@@ -346,7 +345,7 @@ function PanelMeasurementTableTracking({ servicesManager, extensionManager }) {
               <SearchBar
                 onSelectHandler={(e, selected) => {
                   e.persist();
-                  setValue({ label: selected.display, description: selected.display });
+                  setValue({description: selected.display });
                 }}
               />
             </div>
@@ -465,6 +464,30 @@ function PanelMeasurementTableTracking({ servicesManager, extensionManager }) {
             //     'annotator_submitted'
             //   );
             // }
+
+            const measurements = measurementService.getMeasurements();
+
+            measurements.map((item : any) => {
+              if (!item.findingSites) {
+                item.findingSites = [
+                  {
+                    CodeValue: 'CORNERSTONEFREETEXT',
+                    CodingSchemeDesignator: 'CORNERSTONEJS',
+                    CodeMeaning: 'Empty',
+                    text: 'Empty',
+                  },
+                ];
+              }
+              measurementService.update(
+                item.uid,
+                {
+                  ...item,
+                  label : 'Empty',
+                  description : 'Empty',
+                },
+                true
+              );
+            });
             sendTrackedMeasurementsEvent('SAVE_REPORT', {
               viewportId: viewportGrid.activeViewportId,
               isBackupSave: true,

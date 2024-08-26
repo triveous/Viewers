@@ -14,12 +14,12 @@ const CORNERSTONE_3D_TOOLS_SOURCE_VERSION = '0.1';
 const supportedLegacyCornerstoneTags = ['cornerstoneTools@^4.0.0'];
 
 const convertCode = (codingValues, code) => {
-  if (!code || code.CodingSchemeDesignator === 'CORNERSTONEJS') {
-    const ref = `${code.CodingSchemeDesignator}:${code.CodeValue}`;
-    const ret = { ...codingValues[ref], ref, ...code, text: code.CodeMeaning };
+  if (!code || code?.CodingSchemeDesignator === 'CORNERSTONEJS') {
+    const ref = `${code?.CodingSchemeDesignator ?? 'CORNERSTONEJS'}:${code?.CodeValue ?? 'CORNERSTONEJS'}`;
+    const ret = { ...codingValues[ref], ref, ...code, text: code?.CodeMeaning };
     return ret;
   }
-  const ref = `${code.CodingSchemeDesignator}:${code.CodeValue}`;
+  const ref = `${code?.CodingSchemeDesignator}:${code?.CodeValue}`;
   const ret = { ...codingValues[ref], ref, ...code, text: code.CodeMeaning };
   return ret;
 };
