@@ -1,4 +1,4 @@
-import { annotation as cs3dToolAnnotationUtils } from '@cornerstonejs/tools';
+import { annotation as cs3dToolAnnotationUtils } from 'midas-tools';
 
 /**
  * Check whether an annotation from imaging library is selected or not.

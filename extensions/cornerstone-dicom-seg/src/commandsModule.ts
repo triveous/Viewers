@@ -5,7 +5,7 @@ import { cache, metaData } from '@cornerstonejs/core';
 import {
   segmentation as cornerstoneToolsSegmentation,
   Enums as cornerstoneToolsEnums,
-} from '@cornerstonejs/tools';
+} from 'midas-tools';
 import { adaptersRT, helpers, adaptersSEG } from '@cornerstonejs/adapters';
 import { classes, DicomMetadataStore } from '@ohif/core';
 

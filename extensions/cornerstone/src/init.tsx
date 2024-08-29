@@ -2,7 +2,7 @@ import OHIF, { Types } from '@ohif/core';
 import React from 'react';
 
 import * as cornerstone from '@cornerstonejs/core';
-import * as cornerstoneTools from '@cornerstonejs/tools';
+import * as cornerstoneTools from 'midas-tools';
 import {
   init as cs3DInit,
   eventTarget,
@@ -14,7 +14,7 @@ import {
   utilities as csUtilities,
   Enums as csEnums,
 } from '@cornerstonejs/core';
-import { Enums } from '@cornerstonejs/tools';
+import { Enums } from 'midas-tools';
 import { cornerstoneStreamingImageVolumeLoader } from '@cornerstonejs/streaming-image-volume-loader';
 
 import initWADOImageLoader from './initWADOImageLoader';

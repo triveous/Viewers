@@ -1,12 +1,12 @@
 import React from 'react';
 import * as cornerstone from '@cornerstonejs/core';
-import * as cornerstoneTools from '@cornerstonejs/tools';
+import * as cornerstoneTools from 'midas-tools';
 import {
   Enums as cs3DEnums,
   imageLoadPoolManager,
   imageRetrievalPoolManager,
 } from '@cornerstonejs/core';
-import { Enums as cs3DToolsEnums } from '@cornerstonejs/tools';
+import { Enums as cs3DToolsEnums } from 'midas-tools';
 import { ServicesManager, Types } from '@ohif/core';
 
 import init from './init';

@@ -1,4 +1,4 @@
-import { ToolGroupManager, Enums, Types } from '@cornerstonejs/tools';
+import { ToolGroupManager, Enums, Types } from 'midas-tools';
 
 import { Types as OhifTypes, pubSubServiceInterface } from '@ohif/core';
 import getActiveViewportEnabledElement from '../../utils/getActiveViewportEnabledElement';

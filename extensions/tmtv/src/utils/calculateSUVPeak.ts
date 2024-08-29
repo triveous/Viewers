@@ -1,5 +1,5 @@
 import { Types } from '@cornerstonejs/core';
-import { utilities } from '@cornerstonejs/tools';
+import { utilities } from 'midas-tools';
 import { vec3 } from 'gl-matrix';
 
 type AnnotationsForThresholding = {

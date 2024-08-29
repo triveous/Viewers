@@ -1,5 +1,5 @@
 import { Types } from '@cornerstonejs/core';
-import { utilities } from '@cornerstonejs/tools';
+import { utilities } from 'midas-tools';
 
 /**
  * Given a list of labelmaps (with the possibility of overlapping regions),

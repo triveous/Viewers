@@ -5,7 +5,7 @@ import {
   drawing,
   utilities,
   Types as cs3DToolsTypes,
-} from '@cornerstonejs/tools';
+} from 'midas-tools';
 import { getTrackingUniqueIdentifiersForElement } from './modules/dicomSRModule';
 import SCOORD_TYPES from '../constants/scoordTypes';
 

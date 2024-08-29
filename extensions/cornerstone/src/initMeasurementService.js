@@ -1,5 +1,5 @@
 import { eventTarget } from '@cornerstonejs/core';
-import { Enums, annotation } from '@cornerstonejs/tools';
+import { Enums, annotation } from 'midas-tools';
 import { DicomMetadataStore } from '@ohif/core';
 import { toolNames } from './initCornerstoneTools';
 import { onCompletedCalibrationLine } from './tools/CalibrationLineTool';

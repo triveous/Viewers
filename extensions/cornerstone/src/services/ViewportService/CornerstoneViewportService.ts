@@ -12,7 +12,7 @@ import {
   Enums as csEnums,
 } from '@cornerstonejs/core';
 
-import { utilities as csToolsUtils, Enums as csToolsEnums } from '@cornerstonejs/tools';
+import { utilities as csToolsUtils, Enums as csToolsEnums } from 'midas-tools';
 import { IViewportService } from './IViewportService';
 import { RENDERING_ENGINE_ID } from './constants';
 import ViewportInfo, { DisplaySetOptions, PublicViewportOptions } from './Viewport';

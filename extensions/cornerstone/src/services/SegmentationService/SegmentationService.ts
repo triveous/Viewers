@@ -16,7 +16,7 @@ import {
   segmentation as cstSegmentation,
   Types as cstTypes,
   utilities as cstUtils,
-} from '@cornerstonejs/tools';
+} from 'midas-tools';
 import isEqual from 'lodash.isequal';
 import { Types as ohifTypes } from '@ohif/core';
 import { easeInOutBell, reverseEaseInOutBell } from '../../utils/transitions';

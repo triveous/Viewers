@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Enums, Types, utilities } from '@cornerstonejs/core';
-import { utilities as csToolsUtils } from '@cornerstonejs/tools';
+import { utilities as csToolsUtils } from 'midas-tools';
 import { ImageScrollbar } from '@ohif/ui';
 import { ServicesManger } from '@ohif/core';
 

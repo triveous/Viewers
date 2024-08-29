@@ -1,4 +1,4 @@
-import { addTool, RectangleROIStartEndThresholdTool } from '@cornerstonejs/tools';
+import { addTool, RectangleROIStartEndThresholdTool } from 'midas-tools';
 import { utilities } from '@cornerstonejs/core';
 
 import measurementServiceMappingsFactory from './utils/measurementServiceMappings/measurementServiceMappingsFactory';

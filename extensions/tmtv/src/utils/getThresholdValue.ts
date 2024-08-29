@@ -1,4 +1,4 @@
-import * as csTools from '@cornerstonejs/tools';
+import * as csTools from 'midas-tools';
 
 function getRoiStats(referencedVolume, annotations) {
   // roiStats

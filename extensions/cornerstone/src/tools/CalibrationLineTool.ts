@@ -1,5 +1,5 @@
 import { metaData } from '@cornerstonejs/core';
-import { LengthTool, utilities } from '@cornerstonejs/tools';
+import { LengthTool, utilities } from 'midas-tools';
 import callInputDialog from '../utils/callInputDialog';
 import getActiveViewportEnabledElement from '../utils/getActiveViewportEnabledElement';
 

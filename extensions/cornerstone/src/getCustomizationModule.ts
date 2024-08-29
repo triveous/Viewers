@@ -1,4 +1,4 @@
-import { Enums } from '@cornerstonejs/tools';
+import { Enums } from 'midas-tools';
 import { toolNames } from './initCornerstoneTools';
 import DicomUpload from './components/DicomUpload/DicomUpload';
 

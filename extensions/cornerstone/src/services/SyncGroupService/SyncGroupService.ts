@@ -1,4 +1,4 @@
-import { synchronizers, SynchronizerManager, Synchronizer } from '@cornerstonejs/tools';
+import { synchronizers, SynchronizerManager, Synchronizer } from 'midas-tools';
 
 import { pubSubServiceInterface, Types, ServicesManager } from '@ohif/core';
 

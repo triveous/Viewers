@@ -1,7 +1,7 @@
 import { VolumeViewport, metaData } from '@cornerstonejs/core';
 import { utilities } from '@cornerstonejs/core';
 import { IStackViewport, IVolumeViewport, Point3 } from '@cornerstonejs/core/dist/esm/types';
-import { AnnotationDisplayTool, drawing } from '@cornerstonejs/tools';
+import { AnnotationDisplayTool, drawing } from 'midas-tools';
 import { guid } from '@ohif/core/src/utils';
 
 interface CachedStat {

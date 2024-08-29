@@ -1,4 +1,4 @@
-import { Enums as csToolsEnums, Types as cstTypes } from '@cornerstonejs/tools';
+import { Enums as csToolsEnums, Types as cstTypes } from 'midas-tools';
 import { Types } from '@cornerstonejs/core';
 
 type SegmentationConfig = cstTypes.LabelmapTypes.LabelmapConfig & {

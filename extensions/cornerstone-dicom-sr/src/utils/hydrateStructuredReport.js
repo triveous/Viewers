@@ -2,7 +2,7 @@ import { utilities, metaData } from '@cornerstonejs/core';
 import OHIF, { DicomMetadataStore } from '@ohif/core';
 import getLabelFromDCMJSImportedToolData from './getLabelFromDCMJSImportedToolData';
 import { adaptersSR } from '@cornerstonejs/adapters';
-import { annotation as CsAnnotation } from '@cornerstonejs/tools';
+import { annotation as CsAnnotation } from 'midas-tools';
 const { locking } = CsAnnotation;
 
 const { guid } = OHIF.utils;

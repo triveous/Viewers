@@ -6,7 +6,7 @@ import { ViewportActionBar, Tooltip, Icon } from '@ohif/ui';
 
 import { useTranslation } from 'react-i18next';
 
-import { annotation } from '@cornerstonejs/tools';
+import { annotation } from 'midas-tools';
 import { useTrackedMeasurements } from './../getContextModule';
 import { BaseVolumeViewport, Enums } from '@cornerstonejs/core';
 

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState, useReducer } from 'react';
 import { AdvancedToolbox, InputDoubleRange, useViewportGrid } from '@ohif/ui';
 import { Types } from '@ohif/extension-cornerstone';
-import { utilities } from '@cornerstonejs/tools';
+import { utilities } from 'midas-tools';
 
 const { segmentation: segmentationUtils } = utilities;
 

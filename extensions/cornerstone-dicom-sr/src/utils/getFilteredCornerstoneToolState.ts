@@ -1,5 +1,5 @@
 import OHIF from '@ohif/core';
-import { annotation } from '@cornerstonejs/tools';
+import { annotation } from 'midas-tools';
 const { log } = OHIF;
 
 function getFilteredCornerstoneToolState(measurementData, additionalFindingTypes) {

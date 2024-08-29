@@ -1,5 +1,5 @@
 import { eventTarget, EVENTS } from '@cornerstonejs/core';
-import { Enums } from '@cornerstonejs/tools';
+import { Enums } from 'midas-tools';
 import { CommandsManager, CustomizationService, Types } from '@ohif/core';
 import { findNearbyToolData } from './utils/findNearbyToolData';
 

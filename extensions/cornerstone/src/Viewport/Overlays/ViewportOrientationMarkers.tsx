@@ -7,7 +7,7 @@ import {
   getEnabledElement,
   utilities as csUtils,
 } from '@cornerstonejs/core';
-import { utilities } from '@cornerstonejs/tools';
+import { utilities } from 'midas-tools';
 import PropTypes from 'prop-types';
 import { vec3 } from 'gl-matrix';
 

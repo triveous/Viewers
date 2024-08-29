@@ -1,5 +1,5 @@
 import { vec3 } from 'gl-matrix';
-import { Types, annotation } from '@cornerstonejs/tools';
+import { Types, annotation } from 'midas-tools';
 import { metaData, utilities, Types as csTypes } from '@cornerstonejs/core';
 import toolNames from '../tools/toolNames';
 import SCOORD_TYPES from '../constants/scoordTypes';

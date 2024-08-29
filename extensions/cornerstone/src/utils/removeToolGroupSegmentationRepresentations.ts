@@ -1,4 +1,4 @@
-import { segmentation } from '@cornerstonejs/tools';
+import { segmentation } from 'midas-tools';
 
 function removeToolGroupSegmentationRepresentations(toolGroupId) {
   const representations = segmentation.state.getSegmentationRepresentations(toolGroupId);

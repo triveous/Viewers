@@ -9,7 +9,7 @@ import {
   CircleROITool,
   LengthTool,
   PlanarFreehandROITool,
-} from '@cornerstonejs/tools';
+} from 'midas-tools';
 import DICOMSRDisplayTool from './tools/DICOMSRDisplayTool';
 import addToolInstance from './utils/addToolInstance';
 import { Types } from '@ohif/core';

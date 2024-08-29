@@ -9,7 +9,7 @@ import {
   Enums,
   utilities as cstUtils,
   ReferenceLinesTool,
-} from '@cornerstonejs/tools';
+} from 'midas-tools';
 import { Types as OhifTypes } from '@ohif/core';
 
 import CornerstoneViewportDownloadForm from './utils/CornerstoneViewportDownloadForm';

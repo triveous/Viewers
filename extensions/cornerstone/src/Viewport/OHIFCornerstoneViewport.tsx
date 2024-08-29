@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useCallback, useState } from 'react';
 import ReactResizeDetector from 'react-resize-detector';
 import PropTypes from 'prop-types';
-import * as cs3DTools from '@cornerstonejs/tools';
+import * as cs3DTools from 'midas-tools';
 import {
   Enums,
   eventTarget,

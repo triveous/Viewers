@@ -7,7 +7,7 @@ import {
   StackViewport,
   VolumeViewport,
 } from '@cornerstonejs/core';
-import { ToolGroupManager } from '@cornerstonejs/tools';
+import { ToolGroupManager } from 'midas-tools';
 import PropTypes from 'prop-types';
 import { ViewportDownloadForm } from '@ohif/ui';
 

@@ -1,7 +1,7 @@
 import { vec3 } from 'gl-matrix';
 import OHIF from '@ohif/core';
 import * as cs from '@cornerstonejs/core';
-import * as csTools from '@cornerstonejs/tools';
+import * as csTools from 'midas-tools';
 import { classes } from '@ohif/core';
 import getThresholdValues from './utils/getThresholdValue';
 import calculateSuvPeak from './utils/calculateSUVPeak';

@@ -1,4 +1,4 @@
-import { utilities } from '@cornerstonejs/tools';
+import { utilities } from 'midas-tools';
 
 function initCineService(cineService) {
   const playClip = (element, playClipOptions) => {
