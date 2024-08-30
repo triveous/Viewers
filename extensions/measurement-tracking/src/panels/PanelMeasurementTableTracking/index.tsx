@@ -337,6 +337,7 @@ function PanelMeasurementTableTracking({ servicesManager, extensionManager }) {
         title: 'Add Ontology',
         noCloseButton: true,
         value: {
+          label: measurement?.findingSites?.[0]?.text || '',
           description: measurement?.findingSites?.[0]?.text || '',
         },
         body: ({ value, setValue }) => {
@@ -345,7 +346,7 @@ function PanelMeasurementTableTracking({ servicesManager, extensionManager }) {
               <SearchBar
                 onSelectHandler={(e, selected) => {
                   e.persist();
-                  setValue({description: selected.display });
+                  setValue({ label: selected.display, description: selected.display });
                 }}
               />
             </div>
@@ -467,7 +468,7 @@ function PanelMeasurementTableTracking({ servicesManager, extensionManager }) {
 
             const measurements = measurementService.getMeasurements();
 
-            measurements.map((item : any) => {
+            measurements.map((item: any) => {
               if (!item.findingSites) {
                 item.findingSites = [
                   {
@@ -482,8 +483,6 @@ function PanelMeasurementTableTracking({ servicesManager, extensionManager }) {
                 item.uid,
                 {
                   ...item,
-                  label : 'Empty',
-                  description : 'Empty',
                 },
                 true
               );
