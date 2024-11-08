@@ -39,18 +39,24 @@ const _generateReport = (measurementData, additionalFindingTypes, options = {}, 
   }
 
   if (user) {
-    dataset.AuthorObserverSequence = [{
-      PersonName: user.name,
-      PersonIdentificationCodeSequence: [{
-        CodeValue: user.id,
-        CodingSchemeDesignator: "99LOCAL"
-      }],
-      AuthorObserverTypeCodeSequence: [{
-        CodeValue: "AUT",
-        CodingSchemeDesignator: "DCM",
-        CodeMeaning: "Author"
-      }]
-    }];
+    dataset.AuthorObserverSequence = [
+      {
+        PersonName: user.name,
+        PersonIdentificationCodeSequence: [
+          {
+            CodeValue: user.id,
+            CodingSchemeDesignator: '99LOCAL',
+          },
+        ],
+        AuthorObserverTypeCodeSequence: [
+          {
+            CodeValue: 'AUT',
+            CodingSchemeDesignator: 'DCM',
+            CodeMeaning: 'Author',
+          },
+        ],
+      },
+    ];
   }
   return dataset;
 };
@@ -100,8 +106,12 @@ const commandsModule = ({}) => {
       }
 
       try {
-        const naturalizedReport = _generateReport(measurementData, additionalFindingTypes, options, user );
-        console.log("---naturalizedReport-----",naturalizedReport );
+        const naturalizedReport = _generateReport(
+          measurementData,
+          additionalFindingTypes,
+          options,
+          user
+        );
         const { StudyInstanceUID, ContentSequence } = naturalizedReport;
         // The content sequence has 5 or more elements, of which
         // the `[4]` element contains the annotation data, so this is

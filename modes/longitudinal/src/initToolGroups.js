@@ -22,14 +22,16 @@ function initDefaultToolGroup(extensionManager, toolGroupService, commandsManage
       { toolName: toolNames.StackScrollMouseWheel, bindings: [] },
     ],
     passive: [
-      { toolName: toolNames.Length,
+      {
+        toolName: toolNames.Length,
         configuration: {
           getTextCallback: (callback, eventDetails) => {
             console.log('getTextCallback  b l');
             commandsManager.runCommand('arrowTextCallback', {
               callback,
               eventDetails,
-            })},
+            });
+          },
 
           changeTextCallback: (data, eventDetails, callback) =>
             commandsManager.runCommand('arrowTextCallback', {
@@ -37,7 +39,8 @@ function initDefaultToolGroup(extensionManager, toolGroupService, commandsManage
               data,
               eventDetails,
             }),
-        }, },
+        },
+      },
       {
         toolName: toolNames.ArrowAnnotate,
         configuration: {
@@ -46,7 +49,8 @@ function initDefaultToolGroup(extensionManager, toolGroupService, commandsManage
             commandsManager.runCommand('arrowTextCallback', {
               callback,
               eventDetails,
-            })},
+            });
+          },
 
           changeTextCallback: (data, eventDetails, callback) =>
             commandsManager.runCommand('arrowTextCallback', {
@@ -168,14 +172,16 @@ function initMPRToolGroup(extensionManager, toolGroupService, commandsManager) {
       { toolName: toolNames.StackScrollMouseWheel, bindings: [] },
     ],
     passive: [
-      { toolName: toolNames.Length,
+      {
+        toolName: toolNames.Length,
         configuration: {
           getTextCallback: (callback, eventDetails) => {
             console.log('getTextCallback  c');
             commandsManager.runCommand('arrowTextCallback', {
               callback,
               eventDetails,
-            })},
+            });
+          },
 
           changeTextCallback: (data, eventDetails, callback) =>
             commandsManager.runCommand('arrowTextCallback', {
@@ -184,7 +190,7 @@ function initMPRToolGroup(extensionManager, toolGroupService, commandsManager) {
               eventDetails,
             }),
         },
-       },
+      },
       {
         toolName: toolNames.ArrowAnnotate,
         configuration: {
@@ -193,7 +199,8 @@ function initMPRToolGroup(extensionManager, toolGroupService, commandsManager) {
             commandsManager.runCommand('arrowTextCallback', {
               callback,
               eventDetails,
-            })},
+            });
+          },
 
           changeTextCallback: (data, eventDetails, callback) =>
             commandsManager.runCommand('arrowTextCallback', {

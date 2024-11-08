@@ -116,6 +116,7 @@ function modeFactory({ modeConfiguration }) {
       toolbarService.createButtonSection('primary', [
         // 'MeasurementTools',
         'LengthTool',
+        'FreehandTool',
         'bidirectionalTool',
         'ArrowAnnotationTool',
         'circleTool',

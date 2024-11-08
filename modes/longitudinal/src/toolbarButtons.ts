@@ -229,6 +229,21 @@ const toolbarButtons: Button[] = [
           ],
           'Circle Tool'
         ),
+        _createToolButton(
+          'PlanarFreehandROI',
+          'tool-freehand-polygon',
+          'Freehand ROI',
+          [
+            {
+              commandName: 'setToolActive',
+              commandOptions: {
+                toolName: 'PlanarFreehandROI',
+              },
+              context: 'CORNERSTONE',
+            },
+          ],
+          'Freehand ROI Tool'
+        ),
       ],
     },
   },
@@ -253,6 +268,25 @@ const toolbarButtons: Button[] = [
           commandOptions: {
             toolName: 'SRLength',
             toolGroupId: 'SRToolGroup',
+          },
+          context: 'CORNERSTONE',
+        },
+      ],
+    },
+  },
+  // Freehand ROI Tool (Separate from MeasurementTools)
+  {
+    id: 'FreehandTool',
+    type: 'ohif.radioGroup',
+    props: {
+      type: 'tool',
+      icon: 'tool-freehand-polygon', // Replace with the appropriate icon for Freehand
+      label: 'Freehand ROI',
+      commands: [
+        {
+          commandName: 'setToolActive',
+          commandOptions: {
+            toolName: 'PlanarFreehandROI',
           },
           context: 'CORNERSTONE',
         },
