@@ -23,15 +23,15 @@ window.config = {
     {
       // ~ REQUIRED
       // Authorization Server URL
-      authority: 'https://aiims.triveous.tech/kc/realms/midas',
-      client_id: 'dashboard',
+      authority: '<OIDC_AUTHORITY>', // 'https://aiims.triveous.tech/kc/realms/midas',
+      client_id: '<OIDC_CLIENTID>' , //'dashboard',
       redirect_uri: '/callback',
       response_type: 'id_token token',
       scope:
         'openid email profile', // email profile openid
       // ~ OPTIONAL
       post_logout_redirect_uri: '/logout-redirect.html',
-      revoke_uri: 'https://accounts.google.com/o/oauth2/revoke?token=',
+      revoke_uri:  '<OIDC_REVOKE_URI>', // 'https://accounts.google.com/o/oauth2/revoke?token=',
       automaticSilentRenew: true,
       revokeAccessTokenOnSignout: true,
     },
