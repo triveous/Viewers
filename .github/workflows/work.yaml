@@ -27,3 +27,5 @@ jobs:
           docker push $DOCKER_HUB_USERNAME/$DOCKER_HUB_REPOSITORY:central-$IMAGE_TAG
           docker build -t $DOCKER_HUB_USERNAME/$DOCKER_HUB_REPOSITORY:hub-$IMAGE_TAG -f platform/app/.recipes/Midas/dockerfile-hub .
           docker push $DOCKER_HUB_USERNAME/$DOCKER_HUB_REPOSITORY:hub-$IMAGE_TAG
+          docker build -t $DOCKER_HUB_USERNAME/$DOCKER_HUB_REPOSITORY:contributor-prod-$IMAGE_TAG -f platform/app/.recipes/Midas/dockerfile-contributor-prod .
+          docker push $DOCKER_HUB_USERNAME/$DOCKER_HUB_REPOSITORY:contributor-prod-$IMAGE_TAG
