@@ -146,7 +146,7 @@ function OpenIdConnectRoutes({ oidc, routerBasename, userAuthenticationService }
 
   const location = useLocation();
   let { pathname, search } = location;
-  if(!pathname.includes(routerBasename)) pathname = routerBasename + pathname;
+  // if(!pathname.includes(routerBasename)) pathname = routerBasename + pathname;
   let redirect_uri = new URL(userManager.settings._redirect_uri).pathname; //.replace(routerBasename,'')
   const silent_refresh_uri = new URL(userManager.settings._silent_redirect_uri).pathname; //.replace(routerBasename,'')
   const post_logout_redirect_uri = new URL(userManager.settings._post_logout_redirect_uri).pathname; //.replace(routerBasename,'');
@@ -155,7 +155,8 @@ function OpenIdConnectRoutes({ oidc, routerBasename, userAuthenticationService }
 
   // const pathnameRelative = pathname.replace(routerBasename,'');
 
-  if (pathname !== '/callback') {
+  if (pathname !== redirect_uri) {
+    console.log('---we are setting sessionStorage---');
     sessionStorage.setItem('ohif-redirect-to', JSON.stringify({ pathname, search }));
   }
   console.log('---pathName, redirect_uri', pathname, redirect_uri);
@@ -185,6 +186,7 @@ function OpenIdConnectRoutes({ oidc, routerBasename, userAuthenticationService }
           <CallbackPage
             userManager={userManager}
             onRedirectSuccess={user => {
+              console.log('Redirect success');
               const { pathname, search = '' } = JSON.parse(
                 sessionStorage.getItem('ohif-redirect-to')
               );

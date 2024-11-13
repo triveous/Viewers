@@ -5,7 +5,7 @@ function CallbackPage({ userManager, onRedirectSuccess }) {
   const onRedirectError = error => {
     throw new Error(error);
   };
-
+  console.log('---CallbackPage');
   userManager
     .signinRedirectCallback()
     .then(user => onRedirectSuccess(user))
