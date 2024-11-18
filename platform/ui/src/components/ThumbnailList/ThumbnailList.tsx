@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import Thumbnail from '../Thumbnail';
@@ -12,7 +12,13 @@ const ThumbnailList = ({
   onThumbnailDoubleClick,
   onClickUntrack,
   activeDisplaySetInstanceUIDs = [],
+  viewportId = 'cornerstone-viewport-element', // ID of your cornerstone viewport element
+  maxRetries = 10
 }) => {
+  const [hasLoadedAnnotations, setHasLoadedAnnotations] = useState(false);
+  const retryCount = useRef(0);
+  const timeoutRef = useRef(null);
+
   const latestThumbnail = thumbnails
     .filter(thumb => thumb.modality === 'SR')
     .reduce(
@@ -24,19 +30,77 @@ const ThumbnailList = ({
   const everythingExceptSRThmbnails = thumbnails.filter(thumb => thumb.modality !== 'SR');
   const updatedThumbnails = [...everythingExceptSRThmbnails];
 
-  const hasEffectRun = useRef(false);
   useEffect(() => {
-    if (!hasEffectRun.current) {
-      const timer = setTimeout(() => {
-        if (latestThumbnail && latestThumbnail.displaySetInstanceUID) {
+    const handleImageRendered = (event) => {
+      if (!hasLoadedAnnotations && latestThumbnail?.displaySetInstanceUID) {
+        setTimeout(() => {
           onThumbnailDoubleClick(latestThumbnail.displaySetInstanceUID);
-        }
-        hasEffectRun.current = true;
-      }, 12000); // Adjust the delay as necessary
+          setHasLoadedAnnotations(true);
+        }, 100);
+      }
+    };
 
-      return () => clearTimeout(timer);
-    }
-  }, [latestThumbnail, onThumbnailDoubleClick]);
+    const handleElementEnabled = (event) => {
+      const element = event.detail.element;
+      handleImageRendered(event);
+    };
+
+    const findViewportElement = (): HTMLElement | null => {
+      // First try querySelector
+      const elementByQuery = document.querySelector(`.${viewportId}`);
+      if (elementByQuery instanceof HTMLElement) {
+        return elementByQuery;
+      }
+
+      // If querySelector fails, try getElementsByClassName
+      const elementsByClass = document.getElementsByClassName(viewportId);
+      if (elementsByClass.length > 0 && elementsByClass[0] instanceof HTMLElement) {
+        return elementsByClass[0];
+      }
+
+      return null;
+    };
+
+
+    const setupEventListeners = () => {
+      const element = findViewportElement();
+
+      if (element) {
+        // Element found, set up listeners
+        element.addEventListener('CORNERSTONE_IMAGE_RENDERED', handleElementEnabled);
+        retryCount.current = 0; // Reset retry count
+        return true;
+      } else if (retryCount.current < maxRetries) {
+        // Element not found, retry after delay
+        retryCount.current += 1;
+        timeoutRef.current = setTimeout(setupEventListeners, 500);
+        return false;
+      } else {
+        console.warn(`Failed to find viewport element after ${maxRetries} attempts`);
+        return false;
+      }
+    };
+
+    // Start the initial attempt
+    setupEventListeners();
+
+    // Cleanup function
+    return () => {
+      // Clear any pending timeout
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      // Remove event listeners if element exists
+      const element = document.getElementById(viewportId);
+      if (element) {
+        element.removeEventListener('CORNERSTONE_IMAGE_RENDERED', handleElementEnabled);
+      }
+
+      // Reset retry count
+      retryCount.current = 0;
+    };
+  }, [hasLoadedAnnotations, latestThumbnail, onThumbnailDoubleClick, viewportId, maxRetries]);
 
   return (
     <div
@@ -108,7 +172,6 @@ const ThumbnailList = ({
             case 'thumbnailNoImage':
               return (
                 <ThumbnailNoImage
-                  isActive={isActive}
                   key={displaySetInstanceUID}
                   displaySetInstanceUID={displaySetInstanceUID}
                   dragData={dragData}
@@ -147,15 +210,7 @@ ThumbnailList.propTypes = {
       componentType: Types.ThumbnailType.isRequired,
       viewportIdentificator: Types.StringArray,
       isTracked: PropTypes.bool,
-      /**
-       * Data the thumbnail should expose to a receiving drop target. Use a matching
-       * `dragData.type` to identify which targets can receive this draggable item.
-       * If this is not set, drag-n-drop will be disabled for this thumbnail.
-       *
-       * Ref: https://react-dnd.github.io/react-dnd/docs/api/use-drag#specification-object-members
-       */
       dragData: PropTypes.shape({
-        /** Must match the "type" a dropTarget expects */
         type: PropTypes.string.isRequired,
       }),
     })
@@ -164,21 +219,20 @@ ThumbnailList.propTypes = {
   onThumbnailClick: PropTypes.func.isRequired,
   onThumbnailDoubleClick: PropTypes.func.isRequired,
   onClickUntrack: PropTypes.func.isRequired,
+  viewportId: PropTypes.string,
 };
-
-// TODO: Support "Viewport Identificator"?
-function _getModalityTooltip(modality) {
-  if (_modalityTooltips.hasOwnProperty(modality)) {
-    return _modalityTooltips[modality];
-  }
-
-  return 'Unknown';
-}
 
 const _modalityTooltips = {
   SR: 'Structured Report',
   SEG: 'Segmentation',
   RTSTRUCT: 'RT Structure Set',
 };
+
+function _getModalityTooltip(modality) {
+  if (_modalityTooltips.hasOwnProperty(modality)) {
+    return _modalityTooltips[modality];
+  }
+  return 'Unknown';
+}
 
 export default ThumbnailList;
