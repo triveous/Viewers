@@ -49,6 +49,7 @@ export function retrieveStudyMetadata(
       sortCriteria,
       sortFunction
     ).then(function (data) {
+      console.log("----metadata line 52---^^^^^^^^^^^^^^^^^^^^^^^^", data);
       resolve(data);
     }, reject);
   });

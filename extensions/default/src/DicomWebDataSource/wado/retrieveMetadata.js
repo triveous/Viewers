@@ -30,7 +30,7 @@ async function RetrieveMetadata(
     sortFunction
   );
   const data = await retrieveMetadataLoader.execLoad();
-
+  console.log("----metadata line 33---^^^^^^^^^^^^^^^^^^^^^^^^", data );
   return data;
 }
 

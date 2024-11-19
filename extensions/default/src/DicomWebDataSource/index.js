@@ -264,6 +264,7 @@ function createDicomWebApi(dicomWebConfig, userAuthenticationService) {
         sortCriteria,
         sortFunction
       );
+      console.log("-------metadata line 268---^^^^^^^^^^^^^^^^^^^^^^^^", data);
 
       // first naturalize the data
       const naturalizedInstancesMetadata = data.map(naturalizeDataset);
@@ -336,6 +337,7 @@ function createDicomWebApi(dicomWebConfig, userAuthenticationService) {
           sortFunction
         );
 
+
       /**
        * naturalizes the dataset, and adds a retrieve bulkdata method
        * to any values containing BulkDataURI.
@@ -356,6 +358,7 @@ function createDicomWebApi(dicomWebConfig, userAuthenticationService) {
           // The value.Value will be set with the bulkdata read value
           // in which case it isn't necessary to re-read this.
           if (value && value.BulkDataURI && !value.Value) {
+            console.log("-----inside if condition that sets bulkdatauri setter function", value);
             // Provide a method to fetch bulkdata
             value.retrieveBulkData = () => {
               // handle the scenarios where bulkDataURI is relative path
@@ -436,6 +439,7 @@ function createDicomWebApi(dicomWebConfig, userAuthenticationService) {
 
       const seriesDeliveredPromises = seriesPromises.map(promise =>
         promise.then(instances => {
+          console.log('-----metadata line 441----', instances);
           storeInstances(instances);
         })
       );
