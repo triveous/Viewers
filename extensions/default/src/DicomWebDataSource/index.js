@@ -347,59 +347,60 @@ function createDicomWebApi(dicomWebConfig, userAuthenticationService) {
       const addRetrieveBulkData = instance => {
         const naturalized = naturalizeDataset(instance);
 
-        // if we know the server doesn't use bulkDataURI, then don't
+        // if we know the server doesn't use bulkDataURI, then don't process further
         if (!dicomWebConfig.bulkDataURI?.enabled) {
           return naturalized;
         }
 
-        Object.keys(naturalized).forEach(key => {
-          const value = naturalized[key];
+        const processBulkData = (dataset) => {
+          Object.keys(dataset).forEach(key => {
+            const value = dataset[key];
 
-          // The value.Value will be set with the bulkdata read value
-          // in which case it isn't necessary to re-read this.
-          if (value && value.BulkDataURI && !value.Value) {
-            console.log("-----inside if condition that sets bulkdatauri setter function", value);
-            // Provide a method to fetch bulkdata
-            const retrieveBulkDataFn = (value) => {
+            // Check if this value has BulkDataURI and has not been resolved yet
+            if (value && value.BulkDataURI && !value.Value) {
+              console.log("-----Processing BulkDataURI for key:", key, value);
 
-              console.log("-----inside retrieveBulkData function", value);
-              // handle the scenarios where bulkDataURI is relative path
-              // fixBulkDataURI(value, naturalized, dicomWebConfig);
+              // Provide a method to fetch bulkdata
+              const retrieveBulkDataFn = (value) => {
+                console.log("-----Inside retrieveBulkData function for:", value);
 
-              const options = {
-                // The bulkdata fetches work with either multipart or
-                // singlepart, so set multipart to false to let the server
-                // decide which type to respond with.
-                multipart: false,
-                BulkDataURI: value.BulkDataURI,
-                // The study instance UID is required if the bulkdata uri
-                // is relative - that isn't disallowed by DICOMweb, but
-                // isn't well specified in the standard, but is needed in
-                // any implementation that stores static copies of the metadata
-                StudyInstanceUID: naturalized.StudyInstanceUID,
+                const options = {
+                  multipart: false,
+                  BulkDataURI: value.BulkDataURI,
+                  StudyInstanceUID: naturalized.StudyInstanceUID,
+                };
+
+                // Fetch the bulk data using the DICOMweb client
+                return qidoDicomWebClient.retrieveBulkData(options).then(val => {
+                  const ret =
+                    (val instanceof Array && val.find(arrayBuffer => arrayBuffer?.byteLength)) ||
+                    undefined;
+                  value.Value = ret;
+                  return ret;
+                });
               };
-              // Todo: this needs to be from wado dicom web client
-              return qidoDicomWebClient.retrieveBulkData(options).then(val => {
-                // There are DICOM PDF cases where the first ArrayBuffer in the array is
-                // the bulk data and DICOM video cases where the second ArrayBuffer is
-                // the bulk data. Here we play it safe and do a find.
-                const ret =
-                  (val instanceof Array && val.find(arrayBuffer => arrayBuffer?.byteLength)) ||
-                  undefined;
-                value.Value = ret;
-                return ret;
-              });
-            };
-            retrieveBulkDataFn(value);
-          }
-        });
+
+              retrieveBulkDataFn(value);
+            }
+
+            // If the value is an object or array, recursively process it
+            if (value && typeof value === 'object') {
+              processBulkData(value);
+            }
+          });
+        };
+
+        // Start processing the root dataset
+        processBulkData(naturalized);
+
         return naturalized;
       };
+
 
       // Async load series, store as retrieved
       function storeInstances(instances) {
         const naturalizedInstances = instances.map(addRetrieveBulkData);
-
+        console.log("---storeInstances---", naturalizedInstances);
         // Adding instanceMetadata to OHIF MetadataProvider
         naturalizedInstances.forEach((instance, index) => {
           instance.wadoRoot = dicomWebConfig.wadoRoot;
