@@ -18,7 +18,9 @@ const ThumbnailList = ({
   const [hasLoadedAnnotations, setHasLoadedAnnotations] = useState(false);
   const retryCount = useRef(0);
   const timeoutRef = useRef(null);
+  // const mutationObserverRef = useRef(null);
 
+  // console.log('---ThumbnailList', thumbnails);
   const latestThumbnail = thumbnails
     .filter(thumb => thumb.modality === 'SR')
     .reduce(
@@ -31,17 +33,19 @@ const ThumbnailList = ({
   const updatedThumbnails = [...everythingExceptSRThmbnails];
 
   useEffect(() => {
+    // console.log('---ThumbnailList', latestThumbnail);
     const handleImageRendered = (event) => {
       if (!hasLoadedAnnotations && latestThumbnail?.displaySetInstanceUID) {
         setTimeout(() => {
           onThumbnailDoubleClick(latestThumbnail.displaySetInstanceUID);
           setHasLoadedAnnotations(true);
-        }, 100);
+        }, 2000);
       }
     };
 
     const handleElementEnabled = (event) => {
       const element = event.detail.element;
+      // console.log('---event from handleElementEnabled : ', event);
       handleImageRendered(event);
     };
 
@@ -61,8 +65,7 @@ const ThumbnailList = ({
       return null;
     };
 
-
-    const setupEventListeners = () => {
+    const setupBasicEventListeners = () => {
       const element = findViewportElement();
 
       if (element) {
@@ -73,7 +76,7 @@ const ThumbnailList = ({
       } else if (retryCount.current < maxRetries) {
         // Element not found, retry after delay
         retryCount.current += 1;
-        timeoutRef.current = setTimeout(setupEventListeners, 500);
+        timeoutRef.current = setTimeout(setupBasicEventListeners, 500);
         return false;
       } else {
         console.warn(`Failed to find viewport element after ${maxRetries} attempts`);
@@ -81,8 +84,55 @@ const ThumbnailList = ({
       }
     };
 
+    // const mutationObserverCallback = (mutationsList) => {
+
+    //   console.log('MutationObserver callback', mutationsList);
+    //   for (const mutation of mutationsList) {
+    //     if (mutation.type === 'childList') {
+    //       // console.log('DOM mutation detected: childList', mutation);
+    //       // Run logic when annotations are not loaded
+    //       if (!hasLoadedAnnotations && latestThumbnail?.displaySetInstanceUID) {
+    //         setTimeout(() => {
+    //           onThumbnailDoubleClick(latestThumbnail.displaySetInstanceUID);
+    //           setHasLoadedAnnotations(true);
+    //         }, 100);
+    //       }
+    //     }
+
+    //     if (mutation.type === 'attributes') {
+    //       console.log(`Attribute "${mutation.attributeName}" changed`);
+    //     }
+    //   }
+    // };
+
+    // const setupMutationObserver = () => {
+    //   // const pollForTargetNode = setInterval(() => {
+    //     const targetNode = document.getElementsByClassName('ol-layer')[0]; // Assuming a single canvas element
+
+    //     if (targetNode) {
+    //       // console.log('Target node found:', targetNode);
+    //       // clearInterval(pollForTargetNode); // Stop polling once the target node is found
+
+    //       mutationObserverRef.current = new MutationObserver(mutationObserverCallback);
+
+    //       mutationObserverRef.current.observe(targetNode, {
+    //         attributes: true, // Watch for attribute changes
+    //         childList: true,  // Watch for child elements being added/removed
+    //         subtree: true,    // Include child nodes in observation
+    //       });
+
+    //       console.log('MutationObserver initialized on ol-layer canvas');
+    //     } else {
+    //       console.warn('Waiting for target node...!!!!!!!!!!!!!');
+    //     }
+    //   // }, 500); // Poll every 500ms
+    // };
+
+
+
     // Start the initial attempt
-    setupEventListeners();
+    setupBasicEventListeners();
+    // setupMutationObserver();
 
     // Cleanup function
     return () => {
@@ -96,9 +146,11 @@ const ThumbnailList = ({
       if (element) {
         element.removeEventListener('CORNERSTONE_STACK_NEW_IMAGE', handleElementEnabled);
       }
-
       // Reset retry count
       retryCount.current = 0;
+      // if (mutationObserverRef.current) {
+      //   mutationObserverRef.current.disconnect();
+      // }
     };
   }, [hasLoadedAnnotations, latestThumbnail, onThumbnailDoubleClick, viewportId, maxRetries]);
 
