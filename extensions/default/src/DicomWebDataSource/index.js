@@ -347,54 +347,59 @@ function createDicomWebApi(dicomWebConfig, userAuthenticationService) {
       const addRetrieveBulkData = instance => {
         const naturalized = naturalizeDataset(instance);
 
-        // if we know the server doesn't use bulkDataURI, then don't process further
         if (!dicomWebConfig.bulkDataURI?.enabled) {
           return naturalized;
         }
 
-        const processBulkData = (dataset) => {
-          Object.keys(dataset).forEach(key => {
-            const value = dataset[key];
+        const processBulkData = dataset => {
+          if (Array.isArray(dataset)) {
+            // Handle arrays
+            dataset.forEach(item => {
+              if (typeof item === 'object' && item !== null) {
+                processBulkData(item); // Process each object in the array
+              }
+            });
+          } else if (typeof dataset === 'object' && dataset !== null) {
+            // Handle objects
+            Object.keys(dataset).forEach(key => {
+              const value = dataset[key];
 
-            // Check if this value has BulkDataURI and has not been resolved yet
-            if (value && value.BulkDataURI && !value.Value) {
-              console.log("-----Processing BulkDataURI for key:", key, value);
+              if (value && value.BulkDataURI && !value.Value) {
+                console.log("Processing BulkDataURI for key:", key, value);
 
-              // Provide a method to fetch bulkdata
-              const retrieveBulkDataFn = (value) => {
-                console.log("-----Inside retrieveBulkData function for:", value);
+                const retrieveBulkDataFn = value => {
+                  console.log("Retrieving bulk data for:", value);
 
-                const options = {
-                  multipart: false,
-                  BulkDataURI: value.BulkDataURI,
-                  StudyInstanceUID: naturalized.StudyInstanceUID,
+                  const options = {
+                    multipart: false,
+                    BulkDataURI: value.BulkDataURI,
+                    StudyInstanceUID: naturalized.StudyInstanceUID,
+                  };
+
+                  return qidoDicomWebClient.retrieveBulkData(options).then(val => {
+                    const ret =
+                      (val instanceof Array && val.find(arrayBuffer => arrayBuffer?.byteLength)) ||
+                      undefined;
+                    value.Value = ret;
+                    return ret;
+                  });
                 };
 
-                // Fetch the bulk data using the DICOMweb client
-                return qidoDicomWebClient.retrieveBulkData(options).then(val => {
-                  const ret =
-                    (val instanceof Array && val.find(arrayBuffer => arrayBuffer?.byteLength)) ||
-                    undefined;
-                  value.Value = ret;
-                  return ret;
-                });
-              };
+                retrieveBulkDataFn(value);
+              }
 
-              retrieveBulkDataFn(value);
-            }
-
-            // If the value is an object or array, recursively process it
-            if (value && typeof value === 'object') {
-              processBulkData(value);
-            }
-          });
+              if (typeof value === 'object' && value !== null) {
+                processBulkData(value); // Recursively process nested objects
+              }
+            });
+          }
         };
 
-        // Start processing the root dataset
-        processBulkData(naturalized);
+        processBulkData(naturalized); // Start processing from the root
 
         return naturalized;
       };
+
 
 
       // Async load series, store as retrieved
