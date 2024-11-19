@@ -361,6 +361,8 @@ function createDicomWebApi(dicomWebConfig, userAuthenticationService) {
             console.log("-----inside if condition that sets bulkdatauri setter function", value);
             // Provide a method to fetch bulkdata
             value.retrieveBulkData = () => {
+
+              console.log("-----inside retrieveBulkData function", value);
               // handle the scenarios where bulkDataURI is relative path
               fixBulkDataURI(value, naturalized, dicomWebConfig);
 
