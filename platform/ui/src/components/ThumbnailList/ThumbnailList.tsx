@@ -67,7 +67,7 @@ const ThumbnailList = ({
 
       if (element) {
         // Element found, set up listeners
-        element.addEventListener('CORNERSTONE_IMAGE_RENDERED', handleElementEnabled);
+        element.addEventListener('CORNERSTONE_STACK_NEW_IMAGE', handleElementEnabled);
         retryCount.current = 0; // Reset retry count
         return true;
       } else if (retryCount.current < maxRetries) {
@@ -94,7 +94,7 @@ const ThumbnailList = ({
       // Remove event listeners if element exists
       const element = document.getElementById(viewportId);
       if (element) {
-        element.removeEventListener('CORNERSTONE_IMAGE_RENDERED', handleElementEnabled);
+        element.removeEventListener('CORNERSTONE_STACK_NEW_IMAGE', handleElementEnabled);
       }
 
       // Reset retry count
