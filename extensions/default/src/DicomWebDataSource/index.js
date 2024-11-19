@@ -344,61 +344,80 @@ function createDicomWebApi(dicomWebConfig, userAuthenticationService) {
        * @param {*} instance
        * @returns naturalized dataset, with retrieveBulkData methods
        */
-      const addRetrieveBulkData = instance => {
+      const addRetrieveBulkData = async instance => {
         const naturalized = naturalizeDataset(instance);
 
         if (!dicomWebConfig.bulkDataURI?.enabled) {
           return naturalized;
         }
 
-        const processBulkData = dataset => {
+        const processBulkData = async dataset => {
           if (Array.isArray(dataset)) {
-            // Handle arrays
-            dataset.forEach(item => {
+            // Process each item in the array
+            for (const item of dataset) {
               if (typeof item === 'object' && item !== null) {
-                processBulkData(item); // Process each object in the array
+                await processBulkData(item); // Recursively process arrays
               }
-            });
+            }
           } else if (typeof dataset === 'object' && dataset !== null) {
-            // Handle objects
-            Object.keys(dataset).forEach(key => {
+            // Process object properties
+            for (const key of Object.keys(dataset)) {
               const value = dataset[key];
 
-              if (value && value.BulkDataURI && !value.Value) {
+              if (value && value.BulkDataURI && !value.Value && value.BulkDataURI.includes('/bulkdata')) {
                 console.log("Processing BulkDataURI for key:", key, value);
 
-                const retrieveBulkDataFn = value => {
-                  console.log("Retrieving bulk data for:", value);
-
-                  const options = {
-                    multipart: false,
-                    BulkDataURI: value.BulkDataURI,
-                    StudyInstanceUID: naturalized.StudyInstanceUID,
-                  };
-
-                  return qidoDicomWebClient.retrieveBulkData(options).then(val => {
-                    const ret =
-                      (val instanceof Array && val.find(arrayBuffer => arrayBuffer?.byteLength)) ||
-                      undefined;
-                    value.Value = ret;
-                    return ret;
-                  });
-                };
-
-                retrieveBulkDataFn(value);
+                try {
+                  const bulkData = await retrieveBulkData(value);
+                  value.Value = bulkData;
+                } catch (error) {
+                  console.error(`Failed to retrieve BulkData for ${key}:`, error);
+                }
               }
 
               if (typeof value === 'object' && value !== null) {
-                processBulkData(value); // Recursively process nested objects
+                await processBulkData(value); // Recursively process nested objects
               }
-            });
+            }
           }
         };
 
-        processBulkData(naturalized); // Start processing from the root
+        const retrieveBulkData = async value => {
+          const options = {
+            multipart: false,
+            BulkDataURI: value.BulkDataURI,
+            StudyInstanceUID: naturalized.StudyInstanceUID,
+          };
+
+          const response = await qidoDicomWebClient.retrieveBulkData(options);
+
+          // Process application/octet-stream
+          if (response instanceof ArrayBuffer) {
+            console.log("Received binary data. Processing...");
+            return processBinaryData(response);
+          }
+
+          console.warn("Unexpected response format:", response);
+          return null;
+        };
+
+        const processBinaryData = arrayBuffer => {
+          // Example: Convert ArrayBuffer to JSON string
+          try {
+            const textDecoder = new TextDecoder();
+            const jsonString = textDecoder.decode(arrayBuffer);
+            return JSON.parse(jsonString);
+          } catch (error) {
+            console.error("Failed to parse binary data as JSON:", error);
+            return arrayBuffer; // Fallback to raw data if JSON parsing fails
+          }
+        };
+
+        await processBulkData(naturalized); // Start processing
 
         return naturalized;
       };
+
 
 
 
