@@ -360,11 +360,11 @@ function createDicomWebApi(dicomWebConfig, userAuthenticationService) {
           if (value && value.BulkDataURI && !value.Value) {
             console.log("-----inside if condition that sets bulkdatauri setter function", value);
             // Provide a method to fetch bulkdata
-            value.retrieveBulkData = () => {
+            const retrieveBulkDataFn = (value) => {
 
               console.log("-----inside retrieveBulkData function", value);
               // handle the scenarios where bulkDataURI is relative path
-              fixBulkDataURI(value, naturalized, dicomWebConfig);
+              // fixBulkDataURI(value, naturalized, dicomWebConfig);
 
               const options = {
                 // The bulkdata fetches work with either multipart or
@@ -390,6 +390,7 @@ function createDicomWebApi(dicomWebConfig, userAuthenticationService) {
                 return ret;
               });
             };
+            retrieveBulkDataFn(value);
           }
         });
         return naturalized;
