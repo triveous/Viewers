@@ -344,79 +344,72 @@ function createDicomWebApi(dicomWebConfig, userAuthenticationService) {
        * @param {*} instance
        * @returns naturalized dataset, with retrieveBulkData methods
        */
-      const addRetrieveBulkData = async instance => {
+      const addRetrieveBulkData = instance => {
         const naturalized = naturalizeDataset(instance);
 
+        // if we know the server doesn't use bulkDataURI, then don't
         if (!dicomWebConfig.bulkDataURI?.enabled) {
           return naturalized;
         }
 
-        const processBulkData = async dataset => {
-          if (Array.isArray(dataset)) {
-            // Process each item in the array
-            for (const item of dataset) {
-              if (typeof item === 'object' && item !== null) {
-                await processBulkData(item); // Recursively process arrays
-              }
+        // Helper function to recursively process the object
+        const processBulkDataRecursively = obj => {
+          // Base case: if obj is not an object or array, exit
+          if (typeof obj !== 'object' || obj === null) {
+            return;
+          }
+
+          // Handle arrays
+          if (Array.isArray(obj)) {
+            obj.forEach(item => processBulkDataRecursively(item));
+            return;
+          }
+
+          // Handle objects
+          Object.keys(obj).forEach(key => {
+            const value = obj[key];
+
+            // If BulkDataURI is found, apply logic
+            if (value && value.BulkDataURI && !value.Value) {
+              value.retrieveBulkData = (options = {}) => {
+                fixBulkDataURI(value, naturalized, dicomWebConfig);
+
+                const { mediaType } = options;
+                const useOptions = {
+                  multipart: false,
+                  BulkDataURI: value.BulkDataURI,
+                  StudyInstanceUID: naturalized.StudyInstanceUID,
+                  mediaTypes: mediaType
+                    ? [{ mediaType }, { mediaType: 'application/octet-stream' }]
+                    : undefined,
+                  ...options,
+                };
+
+                return qidoDicomWebClient.retrieveBulkData(useOptions).then(val => {
+                  const ret =
+                    (val instanceof Array &&
+                      val.find(arrayBuffer => arrayBuffer?.byteLength)) ||
+                    undefined;
+                  value.Value = ret;
+                  return ret;
+                });
+              };
             }
-          } else if (typeof dataset === 'object' && dataset !== null) {
-            // Process object properties
-            for (const key of Object.keys(dataset)) {
-              const value = dataset[key];
 
-              if (value && value.BulkDataURI && !value.Value && value.BulkDataURI.includes('/bulkdata')) {
-                console.log("Processing BulkDataURI for key:", key, value);
-
-                try {
-                  const bulkData = await retrieveBulkData(value);
-                  value.Value = bulkData;
-                } catch (error) {
-                  console.error(`Failed to retrieve BulkData for ${key}:`, error);
-                }
-              }
-
-              if (typeof value === 'object' && value !== null) {
-                await processBulkData(value); // Recursively process nested objects
-              }
+            // Recurse into nested objects or arrays
+            if (typeof value === 'object') {
+              processBulkDataRecursively(value);
             }
-          }
+          });
         };
 
-        const retrieveBulkData = async value => {
-          const options = {
-            multipart: false,
-            BulkDataURI: value.BulkDataURI,
-            StudyInstanceUID: naturalized.StudyInstanceUID,
-          };
-
-          const response = await qidoDicomWebClient.retrieveBulkData(options);
-
-          // Process application/octet-stream
-          if (response instanceof ArrayBuffer) {
-            console.log("Received binary data. Processing...");
-            return processBinaryData(response);
-          }
-
-          console.warn("Unexpected response format:", response);
-          return null;
-        };
-
-        const processBinaryData = arrayBuffer => {
-          // Example: Convert ArrayBuffer to JSON string
-          try {
-            const textDecoder = new TextDecoder();
-            const jsonString = textDecoder.decode(arrayBuffer);
-            return JSON.parse(jsonString);
-          } catch (error) {
-            console.error("Failed to parse binary data as JSON:", error);
-            return arrayBuffer; // Fallback to raw data if JSON parsing fails
-          }
-        };
-
-        await processBulkData(naturalized); // Start processing
+        // Start processing from the root object
+        processBulkDataRecursively(naturalized);
 
         return naturalized;
       };
+
+
 
 
 

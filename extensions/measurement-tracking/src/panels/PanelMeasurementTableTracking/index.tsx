@@ -83,7 +83,7 @@ const SearchBar = ({ onSelectHandler }) => {
         }
         // setLoading(true);
         const response = await fetch(
-          `https://tx.fhir.org/r4/ValueSet/$expand?url=http://snomed.info/sct?fhir_vs&filter=${searchTerm}&_format=application%2Fjson&count=7`
+          `https://advisory.midas.iisc.ac.in/fhir/CodeSystem/93ce8b8a-f83b-4162-b5ee-296a8fbc51f6?_content=${searchTerm}`
         );
 
         if (!response.ok) {
@@ -91,7 +91,7 @@ const SearchBar = ({ onSelectHandler }) => {
         }
         // setLoading(false);
         const data = await response.json();
-        setData(data.expansion.contains);
+        setData(data.concept);
 
         setActive(true);
       } catch (error) {
