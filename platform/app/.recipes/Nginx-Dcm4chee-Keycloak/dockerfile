@@ -1,0 +1,28 @@
+# Use nginx:alpine as the base image
+FROM nginx:alpine
+
+# Install dependencies for oauth2-proxy
+RUN apk add --no-cache curl
+
+# Create necessary directories
+RUN mkdir -p /var/logs/nginx /var/www/html /etc/oauth2-proxy
+
+# Download and install oauth2-proxy
+RUN curl -L https://github.com/oauth2-proxy/oauth2-proxy/releases/download/v7.4.0/oauth2-proxy-v7.4.0.linux-amd64.tar.gz -o oauth2-proxy.tar.gz && \
+  tar -xvzf oauth2-proxy.tar.gz && \
+  mv oauth2-proxy-v7.4.0.linux-amd64/oauth2-proxy /usr/local/bin/ && \
+  rm -rf oauth2-proxy-v7.4.0.linux-amd64 oauth2-proxy.tar.gz
+
+# Copy the built application directly into the container
+# Update this path if the application build artifacts are located elsewhere
+COPY ./platform/app/dist /var/www/html
+
+# Copy the entrypoint script
+COPY ./platform/app/.recipes/Nginx-Dcm4chee-Keycloak/config/entrypoint.sh /entrypoint.sh
+
+# Expose necessary ports
+EXPOSE 80 443 4180
+
+# Set the entrypoint script as the entrypoint
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
