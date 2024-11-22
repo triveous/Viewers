@@ -1,5 +1,6 @@
 # Packages
 node_modules
+platform/app/.recipes/Midas/public/ohif
 
 # Output
 build
