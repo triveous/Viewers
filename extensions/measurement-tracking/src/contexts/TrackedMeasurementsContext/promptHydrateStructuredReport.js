@@ -16,7 +16,7 @@ function promptHydrateStructuredReport({ servicesManager, extensionManager, appC
   const { viewportId, displaySetInstanceUID } = evt;
   const srDisplaySet = displaySetService.getDisplaySetByUID(displaySetInstanceUID);
   return new Promise(async function (resolve, reject) {
-    const promptResult = appConfig?.disableConfirmationPrompts
+    const promptResult = true
       ? RESPONSE.HYDRATE_REPORT
       : await _askTrackMeasurements(uiViewportDialogService, viewportId);
 

@@ -14,11 +14,11 @@ async function promptSaveReport({ servicesManager, commandsManager, extensionMan
   let displaySetInstanceUIDs;
 
   try {
-    const promptResult = await createReportDialogPrompt(uiDialogService, {
-      extensionManager,
-    });
+    // const promptResult = await createReportDialogPrompt(uiDialogService, {
+    //   extensionManager,
+    // });
 
-    if (promptResult.action === PROMPT_RESPONSES.CREATE_REPORT) {
+    if (true ) {
       const dataSources = extensionManager.getDataSources();
       const dataSource = dataSources[0];
       const measurements = measurementService.getMeasurements();
@@ -28,11 +28,7 @@ async function promptSaveReport({ servicesManager, commandsManager, extensionMan
         )
         .filter(m => m.referencedImageId != null);
 
-      const SeriesDescription =
-        // isUndefinedOrEmpty
-        promptResult.value === undefined || promptResult.value === ''
-          ? 'Research Derived Series' // default
-          : promptResult.value; // provided value
+      const SeriesDescription = 'Research Derived Series'
 
       const SeriesNumber = getNextSRSeriesNumber(displaySetService);
 
@@ -55,12 +51,10 @@ async function promptSaveReport({ servicesManager, commandsManager, extensionMan
         servicesManager,
         getReport,
       });
-    } else if (promptResult.action === RESPONSE.CANCEL) {
-      // Do nothing
     }
 
     return {
-      userResponse: promptResult.action,
+      userResponse: PROMPT_RESPONSES.CREATE_REPORT,
       createdDisplaySetInstanceUIDs: displaySetInstanceUIDs,
       StudyInstanceUID,
       SeriesInstanceUID,
