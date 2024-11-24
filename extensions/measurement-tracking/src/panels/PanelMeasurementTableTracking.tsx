@@ -29,6 +29,16 @@ function PanelMeasurementTableTracking({
   const [displayStudySummary, setDisplayStudySummary] = useState(
     DISPLAY_STUDY_SUMMARY_INITIAL_VALUE
   );
+  const [readOnly, setReadOnly] = useState(false);
+
+
+  useEffect(() => {
+    if ( JSON.parse(localStorage.getItem('readOnly')) ) {
+      setReadOnly(JSON.parse(localStorage.getItem('readOnly'))?.readOnly);
+    } else {
+      console.log('we are in false....b');
+    }
+  }, []);
 
   useEffect(() => {
     const updateDisplayStudySummary = async () => {
@@ -101,9 +111,9 @@ function PanelMeasurementTableTracking({
           }
 
           return (
-            <div className="bg-background flex h-9 w-full items-center rounded pr-0.5">
-              <div className="flex space-x-1">
-                <Button
+            <div className="bg-white flex h-9 w-full items-center rounded pr-0.5">
+              <div className="flex w-full justify-center space-y-1 space-x-1">
+                {/* <Button
                   size="sm"
                   variant="ghost"
                   className="pl-1.5"
@@ -120,10 +130,9 @@ function PanelMeasurementTableTracking({
                 >
                   <Icons.Download className="h-5 w-5" />
                   <span className="pl-1">CSV</span>
-                </Button>
-                <Button
-                  size="sm"
-                  variant="ghost"
+                </Button> */}
+                { !readOnly && <Button
+                  size="lg"
                   className="pl-0.5"
                   onClick={() => {
                     sendTrackedMeasurementsEvent('SAVE_REPORT', {
@@ -132,10 +141,9 @@ function PanelMeasurementTableTracking({
                     });
                   }}
                 >
-                  <Icons.Add />
-                  Create SR
-                </Button>
-                <Button
+                  Save Annotations
+                </Button>}
+                {/* <Button
                   size="sm"
                   variant="ghost"
                   className="pl-0.5"
@@ -145,7 +153,7 @@ function PanelMeasurementTableTracking({
                 >
                   <Icons.Delete />
                   Delete All
-                </Button>
+                </Button> */}
               </div>
             </div>
           );

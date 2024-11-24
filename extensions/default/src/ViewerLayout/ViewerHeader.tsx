@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
@@ -21,7 +21,15 @@ function ViewerHeader({
 }: withAppTypes<{ appConfig: AppTypes.Config }>) {
   const navigate = useNavigate();
   const location = useLocation();
+  const [readOnly, setReadOnly] = useState(false);
 
+  useEffect(() => {
+    if (JSON.parse(localStorage.getItem('readOnly'))) {
+      setReadOnly(JSON.parse(localStorage.getItem('readOnly'))?.readOnly);
+    } else {
+      console.log('we are in false....');
+    }
+  }, []);
   const onClickReturnButton = () => {
     const { pathname } = location;
     const dataSourceIdx = pathname.indexOf('/', 1);
@@ -110,17 +118,17 @@ function ViewerHeader({
   return (
     <Header
       menuOptions={menuOptions}
-      isReturnEnabled={!!appConfig.showStudyList}
+      isReturnEnabled={false && !!appConfig.showStudyList}
       onClickReturnButton={onClickReturnButton}
-      WhiteLabeling={appConfig.whiteLabeling}
+      WhiteLabeling={ <></> }
       Secondary={
-        <Toolbar
+        !readOnly ? <Toolbar
           servicesManager={servicesManager}
           buttonSection="secondary"
-        />
+        /> : <></>
       }
       PatientInfo={
-        appConfig.showPatientInfo !== PatientInfoVisibility.DISABLED && (
+        false && appConfig.showPatientInfo !== PatientInfoVisibility.DISABLED && (
           <HeaderPatientInfo
             servicesManager={servicesManager}
             appConfig={appConfig}
@@ -128,9 +136,9 @@ function ViewerHeader({
         )
       }
     >
-      <div className="relative flex justify-center gap-[4px]">
+      { !readOnly &&  <div className="relative flex justify-center gap-[4px]">
         <Toolbar servicesManager={servicesManager} />
-      </div>
+      </div>}
     </Header>
   );
 }
