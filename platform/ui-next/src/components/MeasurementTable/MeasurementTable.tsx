@@ -48,10 +48,8 @@ const MeasurementTable = ({
       onColor={onColor}
       disableEditing={disableEditing}
     >
-      <PanelSection defaultOpen={true}>
-        <PanelSection.Header className="bg-secondary-dark">
-          <span>{`${t(title)} (${amount})`}</span>
-        </PanelSection.Header>
+      <PanelSection className="h-full flex flex-col justify-between" defaultOpen={true}>
+
         <PanelSection.Content>{children}</PanelSection.Content>
       </PanelSection>
     </MeasurementTableProvider>
@@ -59,7 +57,7 @@ const MeasurementTable = ({
 };
 
 const Header = ({ children }: { children: React.ReactNode }) => {
-  return <div className="measurement-table-header">{children}</div>;
+  return <div className="measurement-table-header pt-2">{children}</div>;
 };
 
 const Body = () => {
@@ -74,7 +72,7 @@ const Body = () => {
   }
 
   return (
-    <div className="measurement-table-body space-y-px">
+    <div className="measurement-table-body space-y-2 py-[32px]">
       {data.map((item, index) => (
         <Row
           key={item.uid}

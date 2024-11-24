@@ -482,7 +482,7 @@ function PanelStudyBrowserTracking({
   return (
     <>
       <>
-        <PanelStudyBrowserHeader
+        {/* <PanelStudyBrowserHeader
           viewPresets={viewPresets}
           updateViewPresetValue={updateViewPresetValue}
           actionIcons={actionIcons}
@@ -492,7 +492,7 @@ function PanelStudyBrowserTracking({
           orientation="horizontal"
           className="bg-black"
           thickness="2px"
-        />
+        /> */}
       </>
 
       <StudyBrowser

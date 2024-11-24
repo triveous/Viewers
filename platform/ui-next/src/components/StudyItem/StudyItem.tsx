@@ -32,17 +32,17 @@ const StudyItem = ({
       defaultValue={isActive ? 'study-item' : undefined}
     >
       <AccordionItem value="study-item">
-        <AccordionTrigger className={classnames('hover:bg-accent bg-popover rounded')}>
-          <div className="flex h-[40px] flex-1 flex-row">
+        <AccordionTrigger className={classnames('hover:bg-[#F5F8FF] bg-[#F5F8FF] rounded py-4')}>
+          <div className="flex h-[40px] flex-1 flex-row ">
             <div className="flex w-full flex-row items-center justify-between">
               <div className="flex flex-col items-start text-[13px]">
-                <div className="text-white">{date}</div>
-                <div className="text-muted-foreground h-[18px] max-w-[160px] overflow-hidden truncate whitespace-nowrap">
+                <div className="text-[#38476D] text-md">{date}</div>
+                <div className="text-[#38476D] text-md  h-[18px] max-w-[160px] overflow-hidden truncate whitespace-nowrap">
                   {description}
                 </div>
               </div>
               <div className="text-muted-foreground mr-2 flex flex-col items-end text-[12px]">
-                <div className="max-w-[150px] overflow-hidden text-ellipsis">{modalities}</div>
+                <div className="max-w-[150px] overflow-hidden text-[#38476D]">{modalities}</div>
                 <div>{numInstances}</div>
               </div>
             </div>
