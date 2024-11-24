@@ -152,20 +152,17 @@ function OpenIdConnectRoutes({ oidc, routerBasename, userAuthenticationService }
   const location = useLocation();
   const { pathname, search } = location;
 
-  const redirectURI = userManager.settings._redirect_uri ?? userManager.settings.redirect_uri;
   const silentRedirectURI =
     userManager.settings._silent_redirect_uri ?? userManager.settings.silent_redirect_uri;
   const postLogoutRedirectURI =
     userManager.settings._post_logout_redirect_uri ?? userManager.settings.post_logout_redirect_uri;
 
-  const redirect_uri = new URL(redirectURI).pathname.replace(
-    routerBasename !== '/' ? routerBasename : '',
-    ''
-  );
+  let redirect_uri = new URL(userManager.settings._redirect_uri).pathname;
   const silent_refresh_uri = new URL(silentRedirectURI).pathname; //.replace(routerBasename,'')
   const post_logout_redirect_uri = new URL(postLogoutRedirectURI).pathname; //.replace(routerBasename,'');
 
   // const pathnameRelative = pathname.replace(routerBasename,'');
+  redirect_uri = redirect_uri.replace(/^\/ohif/, '');
 
   if (pathname !== redirect_uri) {
     sessionStorage.setItem('ohif-redirect-to', JSON.stringify({ pathname, search }));
