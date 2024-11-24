@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { useViewportGrid } from '@ohif/ui';
+import { Icon, ProgressLoadingBar, useViewportGrid } from '@ohif/ui';
 import { MeasurementTable } from '@ohif/ui-next';
 import debounce from 'lodash.debounce';
 import { useMeasurements } from '../hooks/useMeasurements';
@@ -48,19 +48,33 @@ export default function PanelMeasurementTable({
     measurementService.remove(uid);
   };
 
-  const renameMeasurement = (uid: string) => {
+  const renameMeasurement = (uid) => {
     jumpToImage(uid);
-    const labelConfig = customizationService.get('measurementLabels');
     const measurement = measurementService.getMeasurement(uid);
-    showLabelAnnotationPopup(measurement, uiDialogService, labelConfig).then(val => {
-      measurementService.update(
-        uid,
-        {
-          ...val,
-        },
-        true
-      );
-    });
+    showLabelAnnotationPopup(measurement, uiDialogService)
+      .then((updatedMeasurement) => {
+        if (updatedMeasurement.findingSites) {
+          updatedMeasurement.findingSites[0] = {
+            ...updatedMeasurement.findingSites[0],
+            CodeMeaning: updatedMeasurement.label,
+            text: updatedMeasurement.label,
+          };
+        } else {
+          updatedMeasurement.findingSites = [
+            {
+              CodeValue: 'CORNERSTONEFREETEXT',
+              CodingSchemeDesignator: 'CORNERSTONEJS',
+              CodeMeaning: updatedMeasurement.label,
+              text: updatedMeasurement.label,
+            },
+          ];
+        }
+
+        measurementService.update(uid, updatedMeasurement, true);
+      })
+      .catch((error) => {
+        console.error('Failed to rename measurement:', error);
+      });
   };
 
   const changeColorMeasurement = (uid: string) => {
@@ -105,7 +119,7 @@ export default function PanelMeasurementTable({
       >
         <MeasurementTable
           title="Measurements"
-          data={measurements}
+          data={[ ...measurements, ...additionalFindings]}
           onClick={jumpToImage}
           onDelete={removeMeasurement}
           onToggleVisibility={toggleVisibilityMeasurement}
@@ -113,6 +127,8 @@ export default function PanelMeasurementTable({
           onRename={renameMeasurement}
           // onColor={changeColorMeasurement}
         >
+
+          <MeasurementTable.Body />
           <MeasurementTable.Header>
             {customHeader && (
               <>
@@ -125,9 +141,8 @@ export default function PanelMeasurementTable({
               </>
             )}
           </MeasurementTable.Header>
-          <MeasurementTable.Body />
         </MeasurementTable>
-        {additionalFindings.length > 0 && (
+        {/* {additionalFindings.length > 0 && (
           <MeasurementTable
             data={additionalFindings}
             title="Additional Findings"
@@ -140,7 +155,7 @@ export default function PanelMeasurementTable({
           >
             <MeasurementTable.Body />
           </MeasurementTable>
-        )}
+        )} */}
       </div>
     </>
   );

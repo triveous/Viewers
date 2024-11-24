@@ -1,5 +1,5 @@
-import React from 'react';
-import { Input, Dialog, ButtonEnums, LabellingFlow } from '@ohif/ui';
+import React, { useEffect, useState } from 'react';
+import { Input, Dialog, ButtonEnums, LabellingFlow, ProgressLoadingBar, Icon } from '@ohif/ui';
 
 /**
  *
@@ -13,6 +13,116 @@ import { Input, Dialog, ButtonEnums, LabellingFlow } from '@ohif/ui';
  * @param {string?} dialogConfig.dialogTitle - title of the input dialog
  * @param {string?} dialogConfig.inputLabel - show label above the input
  */
+
+const SearchBar = ({ onSelectHandler }) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
+  const [active, setActive] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const delay = 500;
+    const timeoutId = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, delay);
+
+    return () => clearTimeout(timeoutId);
+  }, [searchTerm]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (debouncedSearchTerm == '') {
+          setActive(false);
+          return;
+        }
+        // setLoading(true);
+        const response = await fetch(
+          `https://advisory.midas.iisc.ac.in/be/public/ontology?searchTerm=${searchTerm}&page=1&pageSize=20`
+        );
+
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`);
+        }
+        // setLoading(false);
+        const data = await response.json();
+        setData(data.concept);
+
+        setActive(true);
+      } catch (error) {
+        console.error('API call failed:', error.message);
+      }
+    };
+
+    if (debouncedSearchTerm.length > 0) {
+      fetchData();
+    } else {
+      setActive(false);
+      setData([]);
+    }
+  }, [debouncedSearchTerm, onSelectHandler]);
+
+  const handleChange = e => {
+    setSearchTerm(e.target.value);
+  };
+
+  return (
+    <div className="h-[100%] w-full">
+      <div className="h-[100%] w-full">
+        <Input
+          labelClassName="text-black grow text-[14px] leading-[1.2] bg-white"
+          autoFocus
+          id="annotation"
+          className="border-primary-main bg-white text-black"
+          type="text"
+          value={searchTerm}
+          onChange={e => handleChange(e)}
+          label={undefined} onFocus={undefined} onKeyPress={undefined}
+          onKeyDown={undefined} readOnly={undefined} disabled={undefined}
+          labelChildren={undefined}       />
+      </div>
+      {active && (
+        <div className="max-h-[250px] min-h-[52px] w-full overflow-y-auto ">
+          {loading ? (
+            <LoadingBar />
+          ) : (
+            data &&
+            data?.map((item, index) => {
+              return (
+                <div
+                  className="border- p-2 text-sm text-black hover:bg-[#DBDBDA] focus:bg-[#DBDBDA]"
+                  key={index}
+                  onClick={e => {
+                    setActive(false);
+                    setSearchTerm(item.display);
+                    setData([]);
+                    onSelectHandler(e, item);
+                  }}
+                >
+                  <div className="whitespace-normal break-words">{item.display}</div>
+                </div>
+              );
+            })
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const LoadingBar = () => {
+  return (
+    <div className={' flex flex-col items-center justify-center space-y-5'}>
+      <Icon
+        name="loading-ohif-mark"
+        className="h-12 w-12 text-white"
+      />
+      <div className="w-48">
+        <ProgressLoadingBar />
+      </div>
+    </div>
+  );
+};
 
 export function callInputDialog(
   uiDialogService,
@@ -66,7 +176,7 @@ export function callInputDialog(
           return (
             <Input
               autoFocus
-              className="border-primary-main bg-black"
+              className="border-primary-main bg-white"
               type="text"
               id="annotation"
               label={inputLabel}
@@ -123,36 +233,53 @@ export function callLabelAutocompleteDialog(uiDialogService, callback, dialogCon
   });
 }
 
-export function showLabelAnnotationPopup(measurement, uiDialogService, labelConfig) {
-  const exclusive = labelConfig ? labelConfig.exclusive : false;
-  const dropDownItems = labelConfig ? labelConfig.items : [];
-  return new Promise<Map<any, any>>((resolve, reject) => {
-    const labellingDoneCallback = value => {
-      uiDialogService.dismiss({ id: 'select-annotation' });
-      if (typeof value === 'string') {
-        measurement.label = value;
+export function showLabelAnnotationPopup(measurement, uiDialogService) {
+  return new Promise((resolve, reject) => {
+    const onSubmitHandler = ({ action, value }) => {
+      uiDialogService.dismiss({ id: 'enter-annotation' });
+      console.log('-----value', action, value);
+      if (action.text === 'Save' ) {
+        measurement.label = value.label;
+        resolve(measurement);
+      } else {
+        reject(new Error('Action canceled or invalid input'));
       }
-      resolve(measurement);
     };
 
     uiDialogService.create({
-      id: 'select-annotation',
+      id: 'enter-annotation',
+      centralize: true,
       isDraggable: false,
       showOverlay: true,
-      content: LabellingFlow,
-      defaultPosition: {
-        x: window.innerWidth / 2,
-        y: window.innerHeight / 2,
-      },
+      content: Dialog,
       contentProps: {
-        labellingDoneCallback: labellingDoneCallback,
-        measurementData: measurement,
-        componentClassName: {},
-        labelData: dropDownItems,
-        exclusive: exclusive,
+        title: 'Add Ontology',
+        noCloseButton: true,
+        value: {
+          label: measurement?.findingSites?.[0]?.text || '',
+          description: measurement?.findingSites?.[0]?.text || '',
+        },
+        body: ({ value, setValue }) => {
+          return (
+            <div className="flex w-[400px] flex-col gap-5">
+              <SearchBar
+                onSelectHandler={(e, selected) => {
+                  e.persist();
+                  setValue({ label: selected.display, description: selected.display });
+                }}
+              />
+            </div>
+          );
+        },
+        actions: [
+          { id: 'cancel', text: 'Cancel', type: ButtonEnums.type.secondary },
+          { id: 'save', text: 'Save', type: ButtonEnums.type.primary },
+        ],
+        onSubmit: onSubmitHandler,
       },
     });
   });
 }
+
 
 export default callInputDialog;
