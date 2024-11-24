@@ -20,6 +20,11 @@ function fixBulkDataURI(value, instance, dicomWebConfig) {
   // in case of the relative path, make it absolute. The current DICOM standard says
   // the bulkdataURI is relative to the series. However, there are situations where
   // it can be relative to the study too
+  if (value.BulkDataURI.startsWith('http')) {
+    value.BulkDataURI = value.BulkDataURI.replace(/^http:/, 'https:');
+    return;
+  }
+
   let { BulkDataURI } = value;
   const { bulkDataURI: uriConfig = {} } = dicomWebConfig;
 
