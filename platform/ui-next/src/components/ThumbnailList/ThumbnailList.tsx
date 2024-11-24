@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { Thumbnail } from '../Thumbnail';
@@ -11,7 +11,103 @@ const ThumbnailList = ({
   activeDisplaySetInstanceUIDs = [],
   viewPreset,
   onThumbnailContextMenu,
+  viewportId = 'cornerstone-viewport-element', // ID of your cornerstone viewport element
+  maxRetries = 10
 }: withAppTypes) => {
+  const [hasLoadedAnnotations, setHasLoadedAnnotations] = useState(false);
+  const retryCount = useRef(0);
+  const timeoutRef = useRef(null);
+  // const mutationObserverRef = useRef(null);
+
+  // console.log('---ThumbnailList', thumbnails);
+  const latestThumbnail = thumbnails
+    .filter(thumb => thumb.modality === 'SR')
+    .reduce(
+      (max, current) => {
+        return current.seriesNumber > max.seriesNumber ? current : max;
+      },
+      { seriesNumber: -Infinity }
+    );
+  const everythingExceptSRThmbnails = thumbnails.filter(thumb => thumb.modality !== 'SR');
+  const updatedThumbnails = [...everythingExceptSRThmbnails];
+
+  useEffect(() => {
+    // console.log('---ThumbnailList', latestThumbnail);
+    const handleImageRendered = (event) => {
+      if (!hasLoadedAnnotations && latestThumbnail?.displaySetInstanceUID) {
+        setTimeout(() => {
+          console.log('----inside handleImageRendered');
+          onThumbnailDoubleClick(latestThumbnail.displaySetInstanceUID);
+          setHasLoadedAnnotations(true);
+        }, 2000);
+      }
+    };
+
+    const handleElementEnabled = (event) => {
+      const element = event.detail.element;
+      // console.log('---event from handleElementEnabled : ', event);
+      handleImageRendered(event);
+    };
+
+    const findViewportElement = (): HTMLElement | null => {
+      // First try querySelector
+      const elementByQuery = document.querySelector(`.${viewportId}`);
+      if (elementByQuery instanceof HTMLElement) {
+        return elementByQuery;
+      }
+
+      // If querySelector fails, try getElementsByClassName
+      const elementsByClass = document.getElementsByClassName(viewportId);
+      if (elementsByClass.length > 0 && elementsByClass[0] instanceof HTMLElement) {
+        return elementsByClass[0];
+      }
+
+      return null;
+    };
+
+    const setupBasicEventListeners = () => {
+      const element = findViewportElement();
+      console.log('---element from setupBasicEventListeners : ', element);
+      if (element) {
+        // Element found, set up listeners
+        element.addEventListener('CORNERSTONE_STACK_NEW_IMAGE', handleElementEnabled);
+        retryCount.current = 0; // Reset retry count
+        return true;
+      } else if (retryCount.current < maxRetries) {
+        // Element not found, retry after delay
+        retryCount.current += 1;
+        timeoutRef.current = setTimeout(setupBasicEventListeners, 500);
+        return false;
+      } else {
+        console.warn(`Failed to find viewport element after ${maxRetries} attempts`);
+        return false;
+      }
+    };
+    setupBasicEventListeners();
+    // setupMutationObserver();
+
+    // Cleanup function
+    return () => {
+      // Clear any pending timeout
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      // Remove event listeners if element exists
+      const element = document.getElementById(viewportId);
+      if (element) {
+        element.removeEventListener('CORNERSTONE_STACK_NEW_IMAGE', handleElementEnabled);
+      }
+      // Reset retry count
+      retryCount.current = 0;
+      // if (mutationObserverRef.current) {
+      //   mutationObserverRef.current.disconnect();
+      // }
+    };
+  }, [hasLoadedAnnotations, latestThumbnail, onThumbnailDoubleClick, viewportId, maxRetries]);
+
+
+
   return (
     <div
       className="min-h-[350px]"
@@ -21,7 +117,7 @@ const ThumbnailList = ({
     >
       <div
         id="ohif-thumbnail-list"
-        className={`ohif-scrollbar bg-bkg-low grid place-items-center overflow-y-hidden pt-[4px] pr-[2.5px] pl-[2.5px] ${viewPreset === 'thumbnails' ? 'grid-cols-2 gap-[4px] pb-[12px]' : 'grid-cols-1 gap-[2px]'}`}
+        className={`ohif-scrollbar bg-white place-items-center overflow-y-hidden pt-[4px] pr-[2.5px] pl-[2.5px] `}
       >
         {thumbnails.map(
           ({
@@ -43,6 +139,9 @@ const ThumbnailList = ({
             isHydratedForDerivedDisplaySet,
           }) => {
             const isActive = activeDisplaySetInstanceUIDs.includes(displaySetInstanceUID);
+            if( modality === 'SR') {
+              return <></>;
+            }
             return (
               <Thumbnail
                 key={displaySetInstanceUID}
