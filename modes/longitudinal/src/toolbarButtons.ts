@@ -89,48 +89,175 @@ const toolbarButtons: Button[] = [
           commands: setToolActiveToolbar,
           evaluate: 'evaluate.cornerstoneTool',
         }),
-        createButton({
-          id: 'SplineROI',
-          icon: 'icon-tool-spline-roi',
-          label: 'Spline ROI',
-          tooltip: 'Spline ROI',
-          commands: setToolActiveToolbar,
-          evaluate: 'evaluate.cornerstoneTool',
-        }),
-        createButton({
-          id: 'LivewireContour',
-          icon: 'icon-tool-livewire',
-          label: 'Livewire tool',
-          tooltip: 'Livewire tool',
-          commands: setToolActiveToolbar,
-          evaluate: 'evaluate.cornerstoneTool',
-        }),
+        // createButton({
+        //   id: 'SplineROI',
+        //   icon: 'icon-tool-spline-roi',
+        //   label: 'Spline ROI',
+        //   tooltip: 'Spline ROI',
+        //   commands: setToolActiveToolbar,
+        //   evaluate: 'evaluate.cornerstoneTool',
+        // }),
+        // createButton({
+        //   id: 'LivewireContour',
+        //   icon: 'icon-tool-livewire',
+        //   label: 'Livewire tool',
+        //   tooltip: 'Livewire tool',
+        //   commands: setToolActiveToolbar,
+        //   evaluate: 'evaluate.cornerstoneTool',
+        // }),
       ],
     },
   },
+
   {
-    id: 'Zoom',
+    id: 'LengthTool',
     uiType: 'ohif.radioGroup',
     props: {
-      icon: 'tool-zoom',
-      label: 'Zoom',
-      commands: setToolActiveToolbar,
-      evaluate: 'evaluate.cornerstoneTool',
+      type: 'tool',
+      icon: 'tool-length',
+      label: 'length',
+      commands: [
+        {
+          commandName: 'setToolActive',
+          commandOptions: {
+            toolName: 'Length',
+          },
+          context: 'CORNERSTONE',
+        },
+        {
+          commandName: 'setToolActive',
+          commandOptions: {
+            toolName: 'SRLength',
+            toolGroupId: 'SRToolGroup',
+          },
+          context: 'CORNERSTONE',
+        },
+      ],
     },
   },
-  // Window Level
+
   {
-    id: 'WindowLevel',
+    id: 'PlanarFreehandROI',
     uiType: 'ohif.radioGroup',
     props: {
-      icon: 'tool-window-level',
-      label: 'Window Level',
-      commands: setToolActiveToolbar,
-      evaluate: [
-        'evaluate.cornerstoneTool',
+      type: 'tool',
+      icon: 'icon-tool-freehand-roi',
+      label: 'Freehand ROI',
+      commands: [
         {
-          name: 'evaluate.viewport.supported',
-          unsupportedViewportTypes: ['wholeSlide'],
+          commandName: 'setToolActive',
+          commandOptions: {
+            toolName: 'PlanarFreehandROI',
+          },
+          context: 'CORNERSTONE',
+        },
+      ],
+    },
+  },
+
+  {
+    id: 'bidirectionalTool',
+    uiType: 'ohif.radioGroup',
+    props: {
+      type: 'tool',
+      icon: 'tool-bidirectional',
+      label: 'Bi-directional',
+      commands: [
+        {
+          commandName: 'setToolActive',
+          commandOptions: {
+            toolName: 'Bidirectional',
+          },
+          context: 'CORNERSTONE',
+        },
+        // {
+        //   commandName: 'setToolActive',
+        //   commandOptions: {
+        //     toolName: 'SRBidirectional',
+        //     toolGroupId: 'SRToolGroup',
+        //   },
+        //   context: 'CORNERSTONE',
+        // },
+      ],
+    },
+  },
+  // Arrow Annotated measurement Tool
+  {
+    id: 'ArrowAnnotationTool',
+    uiType: 'ohif.radioGroup',
+    props: {
+      type: 'tool',
+      icon: 'tool-annotate',
+      label: 'Annotation',
+      commands: [
+        {
+          commandName: 'setToolActive',
+          commandOptions: {
+            toolName: 'ArrowAnnotate',
+          },
+          context: 'CORNERSTONE',
+        },
+        {
+          commandName: 'setToolActive',
+          commandOptions: {
+            toolName: 'SRArrowAnnotate',
+            toolGroupId: 'SRToolGroup',
+          },
+          context: 'CORNERSTONE',
+        },
+      ],
+    },
+  },
+  // ellipse measurement Tool
+  {
+    id: 'ellipseTool',
+    uiType: 'ohif.radioGroup',
+    props: {
+      type: 'tool',
+      icon: 'tool-ellipse',
+      label: 'Elipse',
+      commands: [
+        {
+          commandName: 'setToolActive',
+          commandOptions: {
+            toolName: 'EllipticalROI',
+          },
+          context: 'CORNERSTONE',
+        },
+        {
+          commandName: 'setToolActive',
+          commandOptions: {
+            toolName: 'SREllipticalROI',
+            toolGroupId: 'SRToolGroup',
+          },
+          context: 'CORNERSTONE',
+        },
+      ],
+    },
+  },
+  // circle measurement Tool
+  {
+    id: 'circleTool',
+    uiType: 'ohif.radioGroup',
+    props: {
+      type: 'tool',
+      icon: 'tool-circle',
+      label: 'Circle',
+      commands: [
+        {
+          commandName: 'setToolActive',
+          commandOptions: {
+            toolName: 'CircleROI',
+          },
+          context: 'CORNERSTONE',
+        },
+        {
+          commandName: 'setToolActive',
+          commandOptions: {
+            toolName: 'SRCircleROI',
+            toolGroupId: 'SRToolGroup',
+          },
+          context: 'CORNERSTONE',
         },
       ],
     },
@@ -147,64 +274,64 @@ const toolbarButtons: Button[] = [
       evaluate: 'evaluate.cornerstoneTool',
     },
   },
-  {
-    id: 'TrackballRotate',
-    uiType: 'ohif.radioGroup',
-    props: {
-      type: 'tool',
-      icon: 'tool-3d-rotate',
-      label: '3D Rotate',
-      commands: setToolActiveToolbar,
-      evaluate: {
-        name: 'evaluate.cornerstoneTool',
-        disabledText: 'Select a 3D viewport to enable this tool',
-      },
-    },
-  },
-  {
-    id: 'Capture',
-    uiType: 'ohif.radioGroup',
-    props: {
-      icon: 'tool-capture',
-      label: 'Capture',
-      commands: 'showDownloadViewportModal',
-      evaluate: [
-        'evaluate.action',
-        {
-          name: 'evaluate.viewport.supported',
-          unsupportedViewportTypes: ['video', 'wholeSlide'],
-        },
-      ],
-    },
-  },
-  {
-    id: 'Layout',
-    uiType: 'ohif.layoutSelector',
-    props: {
-      rows: 3,
-      columns: 4,
-      evaluate: 'evaluate.action',
-    },
-  },
-  {
-    id: 'Crosshairs',
-    uiType: 'ohif.radioGroup',
-    props: {
-      type: 'tool',
-      icon: 'tool-crosshair',
-      label: 'Crosshairs',
-      commands: {
-        commandName: 'setToolActiveToolbar',
-        commandOptions: {
-          toolGroupIds: ['mpr'],
-        },
-      },
-      evaluate: {
-        name: 'evaluate.cornerstoneTool',
-        disabledText: 'Select an MPR viewport to enable this tool',
-      },
-    },
-  },
+  // {
+  //   id: 'TrackballRotate',
+  //   uiType: 'ohif.radioGroup',
+  //   props: {
+  //     type: 'tool',
+  //     icon: 'tool-3d-rotate',
+  //     label: '3D Rotate',
+  //     commands: setToolActiveToolbar,
+  //     evaluate: {
+  //       name: 'evaluate.cornerstoneTool',
+  //       disabledText: 'Select a 3D viewport to enable this tool',
+  //     },
+  //   },
+  // },
+  // {
+  //   id: 'Capture',
+  //   uiType: 'ohif.radioGroup',
+  //   props: {
+  //     icon: 'tool-capture',
+  //     label: 'Capture',
+  //     commands: 'showDownloadViewportModal',
+  //     evaluate: [
+  //       'evaluate.action',
+  //       {
+  //         name: 'evaluate.viewport.supported',
+  //         unsupportedViewportTypes: ['video', 'wholeSlide'],
+  //       },
+  //     ],
+  //   },
+  // },
+  // {
+  //   id: 'Layout',
+  //   uiType: 'ohif.layoutSelector',
+  //   props: {
+  //     rows: 3,
+  //     columns: 4,
+  //     evaluate: 'evaluate.action',
+  //   },
+  // },
+  // {
+  //   id: 'Crosshairs',
+  //   uiType: 'ohif.radioGroup',
+  //   props: {
+  //     type: 'tool',
+  //     icon: 'tool-crosshair',
+  //     label: 'Crosshairs',
+  //     commands: {
+  //       commandName: 'setToolActiveToolbar',
+  //       commandOptions: {
+  //         toolGroupIds: ['mpr'],
+  //       },
+  //     },
+  //     evaluate: {
+  //       name: 'evaluate.cornerstoneTool',
+  //       disabledText: 'Select an MPR viewport to enable this tool',
+  //     },
+  //   },
+  // },
 ];
 
 export default toolbarButtons;

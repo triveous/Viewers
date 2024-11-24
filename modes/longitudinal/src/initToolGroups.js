@@ -45,7 +45,25 @@ function initDefaultToolGroup(
       },
     ],
     passive: [
-      { toolName: toolNames.Length },
+      {
+        toolName: toolNames.Length,
+        configuration: {
+          getTextCallback: (callback, eventDetails) => {
+            console.log('getTextCallback  b l');
+            commandsManager.runCommand('arrowTextCallback', {
+              callback,
+              eventDetails,
+            });
+          },
+
+          changeTextCallback: (data, eventDetails, callback) =>
+            commandsManager.runCommand('arrowTextCallback', {
+              callback,
+              data,
+              eventDetails,
+            }),
+        },
+      },
       {
         toolName: toolNames.ArrowAnnotate,
         configuration: {

@@ -103,15 +103,14 @@ function modeFactory({ modeConfiguration }) {
 
       toolbarService.addButtons([...toolbarButtons, ...moreTools]);
       toolbarService.createButtonSection('primary', [
-        'MeasurementTools',
-        'Zoom',
+        // 'MeasurementTools',
+        'LengthTool',
+        'PlanarFreehandROI',
+        'bidirectionalTool',
+        'ArrowAnnotationTool',
+        'circleTool',
+        'ellipseTool',
         'Pan',
-        'TrackballRotate',
-        'WindowLevel',
-        'Capture',
-        'Layout',
-        'Crosshairs',
-        'MoreTools',
       ]);
 
       // // ActivatePanel event trigger for when a segmentation or measurement is added.
@@ -181,8 +180,8 @@ function modeFactory({ modeConfiguration }) {
             id: ohif.layout,
             props: {
               leftPanels: [tracked.thumbnailList],
-              rightPanels: [cornerstone.segmentation, tracked.measurements],
-              rightPanelClosed: true,
+              rightPanels: [ tracked.measurements],
+              rightPanelClosed: false,
               viewports: [
                 {
                   namespace: tracked.viewport,
