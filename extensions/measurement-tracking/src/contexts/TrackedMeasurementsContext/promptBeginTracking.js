@@ -17,12 +17,12 @@ function promptBeginTracking({ servicesManager, extensionManager }, ctx, evt) {
   const { viewportId, StudyInstanceUID, SeriesInstanceUID } = evt.data || evt;
 
   return new Promise(async function (resolve, reject) {
-    let promptResult = appConfig?.disableConfirmationPrompts
-      ? RESPONSE.SET_STUDY_AND_SERIES
-      : await _askTrackMeasurements(uiViewportDialogService, viewportId);
+    // let promptResult = appConfig?.disableConfirmationPrompts
+    //   ? RESPONSE.SET_STUDY_AND_SERIES
+    //   : await _askTrackMeasurements(uiViewportDialogService, viewportId);
 
     resolve({
-      userResponse: promptResult,
+      userResponse: RESPONSE.SET_STUDY_AND_SERIES,
       StudyInstanceUID,
       SeriesInstanceUID,
       viewportId,

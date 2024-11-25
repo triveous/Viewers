@@ -139,7 +139,7 @@ const ThumbnailList = ({
             isHydratedForDerivedDisplaySet,
           }) => {
             const isActive = activeDisplaySetInstanceUIDs.includes(displaySetInstanceUID);
-            if( modality === 'SR' || !isActive ) {
+            if( modality === 'SR' ) {
               return <></>;
             }
             return (

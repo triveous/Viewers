@@ -16,16 +16,16 @@ function promptTrackNewStudy({ servicesManager, extensionManager }: withAppTypes
   const { viewportId, StudyInstanceUID, SeriesInstanceUID } = evt.data || evt;
 
   return new Promise(async function (resolve, reject) {
-    let promptResult = await _askTrackMeasurements(uiViewportDialogService, viewportId);
+    // let promptResult = await _askTrackMeasurements(uiViewportDialogService, viewportId);
 
-    if (promptResult === RESPONSE.SET_STUDY_AND_SERIES) {
-      promptResult = ctx.isDirty
-        ? await _askSaveDiscardOrCancel(uiViewportDialogService, viewportId)
-        : RESPONSE.SET_STUDY_AND_SERIES;
-    }
+    // if (promptResult === RESPONSE.SET_STUDY_AND_SERIES) {
+    //   promptResult = ctx.isDirty
+    //     ? await _askSaveDiscardOrCancel(uiViewportDialogService, viewportId)
+    //     : RESPONSE.SET_STUDY_AND_SERIES;
+    // }
 
     resolve({
-      userResponse: promptResult,
+      userResponse: RESPONSE.SET_STUDY_AND_SERIES,
       StudyInstanceUID,
       SeriesInstanceUID,
       viewportId,

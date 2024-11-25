@@ -21,6 +21,9 @@ const StudyItem = ({
   viewPreset = 'thumbnails',
   onThumbnailContextMenu,
 }: withAppTypes) => {
+  if(!isActive) {
+    return <></>;
+  }
   return (
     <Accordion
       type="single"
