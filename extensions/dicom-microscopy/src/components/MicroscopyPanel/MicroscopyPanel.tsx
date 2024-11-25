@@ -136,18 +136,7 @@ function MicroscopyPanel(props: IMicroscopyPanelProps) {
       return;
     }
 
-    callInputDialog({
-      uiDialogService,
-      title: 'Enter description of the Series',
-      defaultValue: '',
-      callback: (value: string, action: string) => {
-        switch (action) {
-          case 'save': {
-            saveFunction(value);
-          }
-        }
-      },
-    });
+    saveFunction('Microscopy Annotations');
   };
 
   const getAllDisplaySets = (studyMetadata: any) => {
@@ -166,10 +155,11 @@ function MicroscopyPanel(props: IMicroscopyPanelProps) {
    * @returns
    */
   const saveFunction = async (SeriesDescription: string) => {
+    // console.log('----entered saveFunction----');
     const dataSource = extensionManager.getActiveDataSource()[0];
     const { onSaveComplete } = props;
     const annotations = microscopyService.getAnnotationsForStudy(studyInstanceUID);
-
+    console.log("----datasource and annotations----", dataSource, annotations);
     saving = true;
 
     // There is only one viewer possible for one study,
@@ -179,7 +169,7 @@ function MicroscopyPanel(props: IMicroscopyPanelProps) {
     const studyMetadata = DicomMetadataStore.getStudy(studyInstanceUID);
     const displaySets = getAllDisplaySets(studyMetadata);
     const smDisplaySet = displaySets.find(ds => ds.Modality === 'SM');
-
+    // console.log('---studyMetadata, displaySets, smDisplaySet---', studyMetadata, displaySets, smDisplaySet);
     // Get the next available series number after 4700.
 
     const dsWithMetadata = displaySets.filter(
@@ -195,15 +185,17 @@ function MicroscopyPanel(props: IMicroscopyPanelProps) {
 
     // construct SR dataset
     const dataset = constructSR(metadata, { SeriesDescription, SeriesNumber }, annotations);
-
+    // console.log('----SR dataset----', dataset);
     // Save in DICOM format
     try {
       if (dataSource) {
         if (dataSource.wadoRoot == 'saveDicom') {
+          console.log('----saveDicom----');
           // download as DICOM file
           const part10Buffer = datasetToBuffer(dataset);
           saveByteArray(part10Buffer, `sr-microscopy.dcm`);
         } else {
+          console.log('----else----');
           // Save into Web Data source
           const { StudyInstanceUID } = dataset;
           await dataSource.store.dicom(dataset);
@@ -286,6 +278,28 @@ function MicroscopyPanel(props: IMicroscopyPanelProps) {
     props.commandsManager.runCommand('setLabel', { uid }, 'MICROSCOPY');
   };
 
+
+  const onMeasurementItemDeleteHandler = ({ uid } : { uid : string }) => {
+    // Find the annotation by uid in the current annotations list
+    const annotationToDelete = roiAnnotations.find(annotation => annotation.uid === uid);
+
+    if (annotationToDelete) {
+      try {
+        // Use microscopyService to remove the annotation
+        microscopyService.removeAnnotation(annotationToDelete);
+
+        // Update the state to remove the annotation from the list
+        const updatedAnnotations = roiAnnotations.filter(annotation => annotation.uid !== uid);
+        setRoiAnnotations(updatedAnnotations);
+      } catch (error) {
+        console.error("Error deleting annotation:", error);
+      }
+    } else {
+      console.warn("Annotation not found for uid:", uid);
+    }
+  };
+
+
   // Convert ROI annotations managed by microscopyService into our
   // own format for display
   const data = roiAnnotations.map((roiAnnotation, index) => {
@@ -301,15 +315,16 @@ function MicroscopyPanel(props: IMicroscopyPanelProps) {
     // display text
     const displayText = [];
 
-    if (area !== undefined) {
-      displayText.push(formatArea(area));
-    } else if (length !== undefined) {
-      displayText.push(
-        shortAxisLength
-          ? `${formatLength(length, 'μm')} x ${formatLength(shortAxisLength, 'μm')}`
-          : `${formatLength(length, 'μm')}`
-      );
-    }
+    // if (area !== undefined) {
+    //   displayText.push(formatArea(area));
+    // } else if (length !== undefined) {
+    //   displayText.push(
+    //     shortAxisLength
+    //       ? `${formatLength(length, 'μm')} x ${formatLength(shortAxisLength, 'μm')}`
+    //       : `${formatLength(length, 'μm')}`
+    //   );
+    // }
+    displayText.push(label);
 
     // convert to measurementItem format compatible with <MeasurementTable /> component
     return {
@@ -331,13 +346,27 @@ function MicroscopyPanel(props: IMicroscopyPanelProps) {
         data-cy={'measurements-panel'}
       >
         <MeasurementTable
-          title="Measurements"
+          title="Measurements 123"
           servicesManager={props.servicesManager}
           data={data}
           onClick={onMeasurementItemClickHandler}
           onEdit={onMeasurementItemEditHandler}
+          onDelete={onMeasurementItemDeleteHandler}
         />
       </div>
+
+      {/* Save Annotations Button */}
+      <div style={{ padding: '1rem', textAlign: 'center' }}>
+        <Button
+          onClick={promptSave}  // Trigger the promptSave function which calls saveFunction
+          disabled={disabled}
+          variant="contained"
+          color="primary"
+        >
+          Save Annotations
+        </Button>
+      </div>
+
     </>
   );
 }

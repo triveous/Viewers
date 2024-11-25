@@ -34,9 +34,11 @@
   },
   "peerDependencies": {
     "@ohif/core": "3.7.0",
-    "@ohif/extension-dicom-microscopy": "3.7.0"
+    "@ohif/extension-dicom-microscopy": "3.7.0",
+    "@ohif/extension-measurement-tracking": "^3.7.0"
   },
   "dependencies": {
-    "@babel/runtime": "^7.20.13"
+    "@babel/runtime": "^7.20.13",
+    "@ohif/extension-measurement-tracking": "^3.8.5"
   }
 }

@@ -1,6 +1,9 @@
 import { ServicesManager, CommandsManager, ExtensionManager } from '@ohif/core';
 import styles from './utils/styles';
 import callInputDialog from './utils/callInputDialog';
+import { adaptersSR } from '@cornerstonejs/adapters';  // or appropriate import
+
+const { MeasurementReport } = adaptersSR.Cornerstone3D;
 
 export default function getCommandsModule({
   servicesManager,
@@ -14,6 +17,83 @@ export default function getCommandsModule({
   const { viewportGridService, uiDialogService, microscopyService } = servicesManager.services;
 
   const actions = {
+
+
+    /**
+     * Store the measurements as a structured report in DICOM format
+     * @param {Array} measurementData - List of measurements to be serialized
+     * @param {Array} additionalFindingTypes - Additional findings for the report
+     * @param {Object} options - Additional options for customizing the report
+     * @param {Object} user - The user information (e.g., name and ID) to populate the report author field
+     */
+    storeMeasurements: async ({ measurementData, additionalFindingTypes, options = {}, user }) => {
+      try {
+        // Step 1: Filter the tool state based on measurement data and additional findings
+        const filteredToolState = getFilteredCornerstoneToolState(
+          measurementData,
+          additionalFindingTypes
+        );
+
+        // Step 2: Generate the report using the filtered tool state, metadata, world-to-image coordinates, and options
+        const report = MeasurementReport.generateReport(
+          filteredToolState,
+          metadata, // Assuming metadata is available somewhere
+          utilities.worldToImageCoords,
+          options
+        );
+
+        const { dataset } = report;
+
+        // Step 3: Set the character set as UTF-8 if not already set
+        if (typeof dataset.SpecificCharacterSet === 'undefined') {
+          dataset.SpecificCharacterSet = 'ISO_IR 192';
+        }
+
+        // Step 4: Add user data to the report (if user is provided)
+        if (user) {
+          dataset.AuthorObserverSequence = [
+            {
+              PersonName: user.name,
+              PersonIdentificationCodeSequence: [
+                {
+                  CodeValue: user.id,
+                  CodingSchemeDesignator: '99LOCAL',
+                },
+              ],
+              AuthorObserverTypeCodeSequence: [
+                {
+                  CodeValue: 'AUT',
+                  CodingSchemeDesignator: 'DCM',
+                  CodeMeaning: 'Author',
+                },
+              ],
+            },
+          ];
+        }
+
+        // Step 5: Convert the dataset to a Blob and store it
+        const reportBlob = dcmjs.data.datasetToBlob(dataset);
+
+        // Store the report using the appropriate dataSource method
+        if (dataSource && dataSource.store && dataSource.store.dicom) {
+          await dataSource.store.dicom(dataset);
+
+          // Optionally clear study metadata or refresh the viewer
+          const { StudyInstanceUID } = dataset;
+          if (StudyInstanceUID) {
+            dataSource.deleteStudyMetadataPromise(StudyInstanceUID);
+          }
+          DicomMetadataStore.addInstances([dataset], true);
+        }
+
+        return dataset;
+      } catch (error) {
+        console.error('Error storing measurements:', error);
+        throw new Error('Failed to store measurements.');
+      }
+    },
+
+
     // Measurement tool commands:
     deleteMeasurement: ({ uid }) => {
       if (uid) {
@@ -33,6 +113,7 @@ export default function getCommandsModule({
         callback: (value: string, action: string) => {
           switch (action) {
             case 'save': {
+              // console.log('----inside the case save----', value);
               roiAnnotation.setLabel(value);
               microscopyService.triggerRelabel(roiAnnotation);
             }
