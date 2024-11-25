@@ -46,7 +46,7 @@ const SearchBar = ({ onSelectHandler }) => {
         }
         // setLoading(false);
         const data = await response.json();
-        setData(data.concept);
+        setData(data.data);
 
         setActive(true);
       } catch (error) {
@@ -94,12 +94,12 @@ const SearchBar = ({ onSelectHandler }) => {
                   key={index}
                   onClick={e => {
                     setActive(false);
-                    setSearchTerm(item.display);
+                    setSearchTerm(item.name);
                     setData([]);
                     onSelectHandler(e, item);
                   }}
                 >
-                  <div className="whitespace-normal break-words">{item.display}</div>
+                  <div className="whitespace-normal break-words">{item.name}</div>
                 </div>
               );
             })
@@ -239,7 +239,7 @@ export function showLabelAnnotationPopup(measurement, uiDialogService) {
       uiDialogService.dismiss({ id: 'enter-annotation' });
       console.log('-----value', action, value);
       if (action.text === 'Save' ) {
-        measurement.label = value.label;
+        measurement.label = value.name;
         resolve(measurement);
       } else {
         reject(new Error('Action canceled or invalid input'));
@@ -265,7 +265,7 @@ export function showLabelAnnotationPopup(measurement, uiDialogService) {
               <SearchBar
                 onSelectHandler={(e, selected) => {
                   e.persist();
-                  setValue({ label: selected.display, description: selected.display });
+                  setValue({ name: selected.name });
                 }}
               />
             </div>
