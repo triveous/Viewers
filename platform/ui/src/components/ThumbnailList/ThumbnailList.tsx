@@ -39,7 +39,7 @@ const ThumbnailList = ({
         setTimeout(() => {
           onThumbnailDoubleClick(latestThumbnail.displaySetInstanceUID);
           setHasLoadedAnnotations(true);
-        }, 2000);
+        }, 5000);
       }
     };
 
@@ -66,22 +66,23 @@ const ThumbnailList = ({
     };
 
     const setupBasicEventListeners = () => {
-      const element = findViewportElement();
+      handleImageRendered({});
+      // const element = findViewportElement();
 
-      if (element) {
-        // Element found, set up listeners
-        element.addEventListener('CORNERSTONE_STACK_NEW_IMAGE', handleElementEnabled);
-        retryCount.current = 0; // Reset retry count
-        return true;
-      } else if (retryCount.current < maxRetries) {
-        // Element not found, retry after delay
-        retryCount.current += 1;
-        timeoutRef.current = setTimeout(setupBasicEventListeners, 500);
-        return false;
-      } else {
-        console.warn(`Failed to find viewport element after ${maxRetries} attempts`);
-        return false;
-      }
+      // if (element) {
+      //   // Element found, set up listeners
+      //   element.addEventListener('CORNERSTONE_STACK_NEW_IMAGE', handleElementEnabled);
+      //   retryCount.current = 0; // Reset retry count
+      //   return true;
+      // } else if (retryCount.current < maxRetries) {
+      //   // Element not found, retry after delay
+      //   retryCount.current += 1;
+      //   timeoutRef.current = setTimeout(setupBasicEventListeners, 500);
+      //   return false;
+      // } else {
+      //   console.warn(`Failed to find viewport element after ${maxRetries} attempts`);
+      //   return false;
+      // }
     };
 
     // const mutationObserverCallback = (mutationsList) => {
