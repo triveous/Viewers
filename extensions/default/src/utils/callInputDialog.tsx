@@ -38,7 +38,7 @@ const SearchBar = ({ onSelectHandler }) => {
         }
         // setLoading(true);
         const response = await fetch(
-          `https://advisory.midas.iisc.ac.in/be/public/ontology?searchTerm=${searchTerm}&page=1&pageSize=100`
+          `https://advisory.midas.iisc.ac.in/be/public/ontology?search=${searchTerm}`
         );
 
         if (!response.ok) {
