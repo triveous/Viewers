@@ -72,7 +72,7 @@ const Body = () => {
   }
 
   return (
-    <div className="measurement-table-body space-y-2 py-[32px]">
+    <div className="measurement-table-body space-y-2 py-[32px] overflow-y-auto h-[450px]">
       {data.map((item, index) => (
         <Row
           key={item.uid}
