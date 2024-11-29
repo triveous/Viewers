@@ -16,6 +16,15 @@ const DISPLAY_STUDY_SUMMARY_INITIAL_VALUE = {
   description: '', // 'CHEST/ABD/PELVIS W CONTRAST',
 };
 
+function debounce(func: any, wait: any) {
+  let timeout: any;
+  return () => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func(), wait);
+  };
+}
+
+
 function PanelMeasurementTableTracking({
   servicesManager,
   extensionManager,
@@ -134,12 +143,12 @@ function PanelMeasurementTableTracking({
                 { !readOnly && <Button
                   size="lg"
                   className="pl-0.5"
-                  onClick={() => {
+                  onClick={ debounce( () => {
                     sendTrackedMeasurementsEvent('SAVE_REPORT', {
                       viewportId: viewportGrid.activeViewportId,
                       isBackupSave: true,
                     });
-                  }}
+                  }, 500)}
                 >
                   Save Annotations
                 </Button>}
