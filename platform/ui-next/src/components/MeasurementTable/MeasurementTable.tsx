@@ -48,8 +48,10 @@ const MeasurementTable = ({
       onColor={onColor}
       disableEditing={disableEditing}
     >
-      <PanelSection className="h-full flex flex-col justify-between" defaultOpen={true}>
-
+      <PanelSection
+        className="flex h-full flex-col justify-between"
+        defaultOpen={true}
+      >
         <PanelSection.Content>{children}</PanelSection.Content>
       </PanelSection>
     </MeasurementTableProvider>
@@ -72,7 +74,7 @@ const Body = () => {
   }
 
   return (
-    <div className="measurement-table-body space-y-2 py-[32px] overflow-y-auto h-[450px]">
+    <div className="measurement-table-body max-h-[calc(100vh-300px)] space-y-2 overflow-y-auto py-[32px]">
       {data.map((item, index) => (
         <Row
           key={item.uid}
