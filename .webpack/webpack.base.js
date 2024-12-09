@@ -74,6 +74,8 @@ module.exports = (env, argv, { SRC_DIR, ENTRY }) => {
         // include all types of chunks
         chunks: 'all',
         maxSize: 250 * 1024,
+        maxInitialSize: 250 * 1024,
+        maxAsyncSize: 250 * 1024,
       },
       runtimeChunk: 'single',
       minimize: true,
