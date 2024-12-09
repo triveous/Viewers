@@ -70,12 +70,14 @@ module.exports = (env, argv, { SRC_DIR, ENTRY }) => {
     devtool: isProdBuild ? 'source-map' : 'cheap-module-source-map',
     entry: ENTRY,
     optimization: {
-      // splitChunks: {
-      //   // include all types of chunks
-      //   chunks: 'all',
-      // },
-      //runtimeChunk: 'single',
+      splitChunks: {
+        // include all types of chunks
+        chunks: 'all',
+        maxSize: 250 * 1024,
+      },
+      runtimeChunk: 'single',
       minimize: true,
+      minimizer: [new TerserJSPlugin()],
       sideEffects: true,
     },
     output: {
