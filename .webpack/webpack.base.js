@@ -75,7 +75,7 @@ module.exports = (env, argv, { SRC_DIR, ENTRY }) => {
       //   chunks: 'all',
       // },
       //runtimeChunk: 'single',
-      minimize: isProdBuild,
+      minimize: true,
       sideEffects: false,
     },
     output: {
