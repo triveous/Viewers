@@ -133,6 +133,7 @@ const toolbarButtons: Button[] = [
           context: 'CORNERSTONE',
         },
       ],
+      evaluate: 'evaluate.cornerstoneTool',
     },
   },
 
@@ -152,6 +153,7 @@ const toolbarButtons: Button[] = [
           context: 'CORNERSTONE',
         },
       ],
+      evaluate: 'evaluate.cornerstoneTool',
     },
   },
 
@@ -179,6 +181,7 @@ const toolbarButtons: Button[] = [
         //   context: 'CORNERSTONE',
         // },
       ],
+      evaluate: 'evaluate.cornerstoneTool',
     },
   },
   // Arrow Annotated measurement Tool
@@ -206,6 +209,7 @@ const toolbarButtons: Button[] = [
           context: 'CORNERSTONE',
         },
       ],
+      evaluate: 'evaluate.cornerstoneTool',
     },
   },
   // ellipse measurement Tool
@@ -233,6 +237,7 @@ const toolbarButtons: Button[] = [
           context: 'CORNERSTONE',
         },
       ],
+      evaluate: 'evaluate.cornerstoneTool',
     },
   },
   // circle measurement Tool
@@ -260,6 +265,7 @@ const toolbarButtons: Button[] = [
           context: 'CORNERSTONE',
         },
       ],
+      evaluate: 'evaluate.cornerstoneTool',
     },
   },
   // Pan...

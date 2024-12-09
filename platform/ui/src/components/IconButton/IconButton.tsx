@@ -116,7 +116,10 @@ const IconButton = ({
       data-tool={rest['data-tool']}
     >
       {React.cloneElement(children, {
-        className: classnames(iconSizeClasses[size], 'fill-current'),
+        className: classnames(
+          iconSizeClasses[size],
+          'text-[#38476D] hover:text-white fill-current'
+        ),
       })}
     </button>
   );
