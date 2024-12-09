@@ -19,6 +19,9 @@ RUN yarn config set workspaces-experimental true
 RUN yarn install
 RUN NODE_ENV=production yarn run build
 
+# Install html-minifier-terser
+RUN npm install -g html-minifier-terser
+
 RUN npx html-minifier-terser --collapse-whitespace --minify-js true --minify-css true -o /usr/src/app/platform/app/dist/index.html /usr/src/app/platform/app/dist/index.html
 
 # Stage 2: Bundle the built application into a Docker container
