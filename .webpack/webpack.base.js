@@ -7,7 +7,7 @@ const fs = require('fs');
 const webpack = require('webpack');
 
 // ~~ PLUGINS
-// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const TerserJSPlugin = require('terser-webpack-plugin');
 
 // ~~ PackageJSON
@@ -70,11 +70,11 @@ module.exports = (env, argv, { SRC_DIR, ENTRY }) => {
     devtool: isProdBuild ? 'source-map' : 'cheap-module-source-map',
     entry: ENTRY,
     optimization: {
-      // splitChunks: {
-      //   // include all types of chunks
-      //   chunks: 'all',
-      // },
-      //runtimeChunk: 'single',
+      splitChunks: {
+        // include all types of chunks
+        chunks: 'all',
+      },
+      runtimeChunk: 'single',
       minimize: true,
       sideEffects: false,
     },
@@ -214,7 +214,7 @@ module.exports = (env, argv, { SRC_DIR, ENTRY }) => {
       }),
       ...(isProdBuild ? [] : [new ReactRefreshWebpackPlugin({ overlay: false })]),
       // Uncomment to generate bundle analyzer
-      // new BundleAnalyzerPlugin(),
+      new BundleAnalyzerPlugin(),
     ],
   };
 
@@ -222,7 +222,17 @@ module.exports = (env, argv, { SRC_DIR, ENTRY }) => {
     config.optimization.minimizer = [
       new TerserJSPlugin({
         parallel: true,
-        terserOptions: {},
+        terserOptions: {
+          compress: {
+            drop_console: true, // Remove console logs
+            drop_debugger: true, // Remove debugger statements
+            passes: 2, // Perform multiple passes to improve compression
+          },
+          format: {
+            comments: false, // Remove comments
+          },
+        },
+        extractComments: false,
       }),
     ];
   }
