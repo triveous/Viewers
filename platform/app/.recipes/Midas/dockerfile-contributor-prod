@@ -9,6 +9,7 @@ ENV APP_CONFIG=config/docker_midas_contributor_prod.js
 ENV USE_HASH_ROUTER=false
 ENV REACT_API_URL=/be
 ENV QUICK_BUILD=false
+ENV NODE_ENV=production
 # Copy all files from the root of the OHIF source and note
 # that the Docker ignore file at the root (i.e. ./dockerignore) will filter
 # out files and directories that are not needed.
