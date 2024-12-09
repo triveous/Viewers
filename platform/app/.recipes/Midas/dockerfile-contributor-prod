@@ -18,6 +18,10 @@ COPY ./ /usr/src/app/
 ADD . /usr/src/app/
 RUN yarn config set workspaces-experimental true
 RUN yarn install
+
+# Install Lerna globally
+RUN npm install -g lerna
+
 RUN NODE_ENV=production yarn run build
 
 # Install html-minifier-terser
