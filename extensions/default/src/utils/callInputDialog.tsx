@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Input, Dialog, ButtonEnums, LabellingFlow, ProgressLoadingBar, Icon } from '@ohif/ui';
 
 /**
@@ -20,90 +20,109 @@ const SearchBar = ({ onSelectHandler }) => {
   const [active, setActive] = useState(false);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const containerRef = useRef(null);
 
+  // Debounce search input
   useEffect(() => {
     const delay = 500;
     const timeoutId = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
+      setPage(1); // Reset pagination on new search
+      setData([]); // Clear old data
+      setHasMore(true);
     }, delay);
 
     return () => clearTimeout(timeoutId);
   }, [searchTerm]);
+
+  // Fetch data with pagination
   useEffect(() => {
     const fetchData = async () => {
+      if (debouncedSearchTerm === '') {
+        setActive(false);
+        return;
+      }
+
+      setLoading(true);
       try {
-        if (debouncedSearchTerm == '') {
-          setActive(false);
-          return;
-        }
-        // setLoading(true);
         const response = await fetch(
-          `https://advisory.midas.iisc.ac.in/be/public/ontology?search=${searchTerm}`
+          `https://advisory.midas.iisc.ac.in/be/public/ontology?search=${debouncedSearchTerm}&page=${page}&pageSize=10`
         );
 
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status}`);
-        }
-        // setLoading(false);
-        const data = await response.json();
-        setData(data.data);
+        if (!response.ok) throw new Error(`Error: ${response.status}`);
 
+        const result = await response.json();
+        setData(prevData => [...prevData, ...result.data]); // Append new data
+        setHasMore(result.data.length > 0); // Check if there's more data
         setActive(true);
       } catch (error) {
         console.error('API call failed:', error.message);
       }
+      setLoading(false);
     };
 
-    if (debouncedSearchTerm.length > 0) {
-      fetchData();
-    } else {
+    if (debouncedSearchTerm.length > 0) fetchData();
+    else {
       setActive(false);
       setData([]);
     }
-  }, [debouncedSearchTerm, onSelectHandler]);
+  }, [debouncedSearchTerm, page]);
 
-  const handleChange = e => {
-    setSearchTerm(e.target.value);
-  };
+  // Infinite Scroll Listener
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!containerRef.current || !hasMore || loading) return;
+
+      const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
+      if (scrollTop + clientHeight >= scrollHeight - 10) {
+        setPage(prevPage => prevPage + 1);
+      }
+    };
+
+    if (containerRef.current) {
+      containerRef.current.addEventListener('scroll', handleScroll);
+    }
+
+    return () => {
+      if (containerRef.current) {
+        containerRef.current.removeEventListener('scroll', handleScroll);
+      }
+    };
+  }, [hasMore, loading]);
 
   return (
-    <div className="h-[100%] w-full">
-      <div className="h-[100%] w-full">
-        <Input
-          labelClassName="text-black grow text-[14px] leading-[1.2] bg-white"
-          autoFocus
-          id="annotation"
-          className="border-primary-main bg-white text-black"
+    <div className="h-full w-full">
+      <div className="h-full w-full">
+        <input
+          className="border-primary-main w-full rounded border bg-white p-2 text-black"
           type="text"
           value={searchTerm}
-          onChange={e => handleChange(e)}
-          label={undefined} onFocus={undefined} onKeyPress={undefined}
-          onKeyDown={undefined} readOnly={undefined} disabled={undefined}
-          labelChildren={undefined}       />
+          onChange={e => setSearchTerm(e.target.value)}
+          placeholder="Search..."
+        />
       </div>
       {active && (
-        <div className="max-h-[250px] min-h-[52px] w-full overflow-y-auto ">
-          {loading ? (
-            <LoadingBar />
-          ) : (
-            data &&
-            data?.map((item, index) => {
-              return (
-                <div
-                  className="border- p-2 text-sm text-black hover:bg-[#DBDBDA] focus:bg-[#DBDBDA]"
-                  key={index}
-                  onClick={e => {
-                    setActive(false);
-                    setSearchTerm(item.name);
-                    setData([]);
-                    onSelectHandler(e, item);
-                  }}
-                >
-                  <div className="whitespace-normal break-words">{item.name}</div>
-                </div>
-              );
-            })
-          )}
+        <div
+          ref={containerRef}
+          className="max-h-[250px] min-h-[52px] w-full overflow-y-auto border"
+        >
+          {data.map((item, index) => (
+            <div
+              key={index}
+              className="cursor-pointer p-2 text-sm text-black hover:bg-gray-300"
+              onClick={e => {
+                setActive(false);
+                setSearchTerm(item.name);
+                setData([]);
+                onSelectHandler(e, item);
+              }}
+            >
+              <div className="whitespace-normal break-words">{item.name}</div>
+            </div>
+          ))}
+          {loading && <div className="p-2 text-sm text-gray-500">Loading...</div>}
         </div>
       )}
     </div>
@@ -112,7 +131,7 @@ const SearchBar = ({ onSelectHandler }) => {
 
 const LoadingBar = () => {
   return (
-    <div className={' flex flex-col items-center justify-center space-y-5'}>
+    <div className={'flex flex-col items-center justify-center space-y-5'}>
       <Icon
         name="loading-ohif-mark"
         className="h-12 w-12 text-white"
@@ -238,7 +257,7 @@ export function showLabelAnnotationPopup(measurement, uiDialogService) {
     const onSubmitHandler = ({ action, value }) => {
       uiDialogService.dismiss({ id: 'enter-annotation' });
       console.log('-----value', action, value);
-      if (action.text === 'Save' ) {
+      if (action.text === 'Save') {
         measurement.label = value.name;
         resolve(measurement);
       } else {
@@ -280,6 +299,5 @@ export function showLabelAnnotationPopup(measurement, uiDialogService) {
     });
   });
 }
-
 
 export default callInputDialog;
