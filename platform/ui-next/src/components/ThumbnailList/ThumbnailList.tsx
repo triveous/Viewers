@@ -12,7 +12,7 @@ const ThumbnailList = ({
   viewPreset,
   onThumbnailContextMenu,
   viewportId = 'cornerstone-viewport-element', // ID of your cornerstone viewport element
-  maxRetries = 10
+  maxRetries = 10,
 }: withAppTypes) => {
   const [hasLoadedAnnotations, setHasLoadedAnnotations] = useState(false);
   const retryCount = useRef(0);
@@ -33,17 +33,16 @@ const ThumbnailList = ({
 
   useEffect(() => {
     // console.log('---ThumbnailList', latestThumbnail);
-    const handleImageRendered = (event) => {
+    const handleImageRendered = event => {
       if (!hasLoadedAnnotations && latestThumbnail?.displaySetInstanceUID) {
         setTimeout(() => {
-          console.log('----inside handleImageRendered');
           onThumbnailDoubleClick(latestThumbnail.displaySetInstanceUID);
           setHasLoadedAnnotations(true);
         }, 2000);
       }
     };
 
-    const handleElementEnabled = (event) => {
+    const handleElementEnabled = event => {
       const element = event.detail.element;
       // console.log('---event from handleElementEnabled : ', event);
       handleImageRendered(event);
@@ -73,7 +72,7 @@ const ThumbnailList = ({
         element.addEventListener('CORNERSTONE_STACK_NEW_IMAGE', handleElementEnabled);
         retryCount.current = 0; // Reset retry count
         return true;
-      } else if (retryCount.current < maxRetries) {
+      } else if (retryCount.current <= maxRetries) {
         // Element not found, retry after delay
         retryCount.current += 1;
         timeoutRef.current = setTimeout(setupBasicEventListeners, 500);
@@ -106,8 +105,6 @@ const ThumbnailList = ({
     };
   }, [hasLoadedAnnotations, latestThumbnail, onThumbnailDoubleClick, viewportId, maxRetries]);
 
-
-
   return (
     <div
       className="min-h-[350px]"
@@ -117,7 +114,7 @@ const ThumbnailList = ({
     >
       <div
         id="ohif-thumbnail-list"
-        className={`ohif-scrollbar bg-white place-items-center overflow-y-hidden pt-[4px] pr-[2.5px] pl-[2.5px] `}
+        className={`ohif-scrollbar place-items-center overflow-y-hidden bg-white pt-[4px] pr-[2.5px] pl-[2.5px]`}
       >
         {thumbnails.map(
           ({
@@ -139,7 +136,7 @@ const ThumbnailList = ({
             isHydratedForDerivedDisplaySet,
           }) => {
             const isActive = activeDisplaySetInstanceUIDs.includes(displaySetInstanceUID);
-            if( modality === 'SR' ) {
+            if (modality === 'SR') {
               return <></>;
             }
             return (
