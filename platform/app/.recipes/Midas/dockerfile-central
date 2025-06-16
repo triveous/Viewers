@@ -5,7 +5,7 @@ RUN mkdir /usr/src/app
 WORKDIR /usr/src/app
 
 ENV PUBLIC_URL=/ohif/
-ENV APP_CONFIG=config/docker_midas_central.js
+ENV APP_CONFIG=config/docker_midas_central_prod.js
 ENV USE_HASH_ROUTER=false
 ENV REACT_API_URL=/be
 ENV QUICK_BUILD=true

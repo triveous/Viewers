@@ -25,3 +25,8 @@ jobs:
           IMAGE_TAG=${COMMIT_SHA::7}
           docker build -t $DOCKER_HUB_USERNAME/$DOCKER_HUB_REPOSITORY:contributor-prod-$IMAGE_TAG -f platform/app/.recipes/Midas/dockerfile-contributor-prod .
           docker push $DOCKER_HUB_USERNAME/$DOCKER_HUB_REPOSITORY:contributor-prod-$IMAGE_TAG
+
+          # Build and push central-prod image
+
+          docker build -t $DOCKER_HUB_USERNAME/$DOCKER_HUB_REPOSITORY:central-prod-$IMAGE_TAG -f platform/app/.recipes/Midas/dockerfile-central .
+          docker push $DOCKER_HUB_USERNAME/$DOCKER_HUB_REPOSITORY:central-prod-$IMAGE_TAG
