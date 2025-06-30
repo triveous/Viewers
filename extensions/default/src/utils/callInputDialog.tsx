@@ -20,7 +20,7 @@ const SearchBar = ({ onSelectHandler }) => {
   const [active, setActive] = useState(false);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const containerRef = useRef(null);
 
@@ -29,7 +29,7 @@ const SearchBar = ({ onSelectHandler }) => {
     const delay = 500;
     const timeoutId = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
-      setPage(1); // Reset pagination on new search
+      setPage(0); // Reset pagination on new search
       setData([]); // Clear old data
       setHasMore(true);
     }, delay);
@@ -48,10 +48,12 @@ const SearchBar = ({ onSelectHandler }) => {
       setLoading(true);
       try {
         const response = await fetch(
-          `https://advisory.midas.iisc.ac.in/be/public/ontology?search=${debouncedSearchTerm}&page=${page}&pageSize=10`
+          `https://advisory.midas.iisc.ac.in/be/public/ontology/NCIT_C83490/descendants?searchTerm=${debouncedSearchTerm}&page=${page}&pageSize=10`
         );
 
-        if (!response.ok) throw new Error(`Error: ${response.status}`);
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status}`);
+        }
 
         const result = await response.json();
         setData(prevData => [...prevData, ...result.data]); // Append new data
@@ -63,8 +65,9 @@ const SearchBar = ({ onSelectHandler }) => {
       setLoading(false);
     };
 
-    if (debouncedSearchTerm.length > 0) fetchData();
-    else {
+    if (debouncedSearchTerm.length > 0) {
+      fetchData();
+    } else {
       setActive(false);
       setData([]);
     }
@@ -73,7 +76,9 @@ const SearchBar = ({ onSelectHandler }) => {
   // Infinite Scroll Listener
   useEffect(() => {
     const handleScroll = () => {
-      if (!containerRef.current || !hasMore || loading) return;
+      if (!containerRef.current || !hasMore || loading) {
+        return;
+      }
 
       const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
       if (scrollTop + clientHeight >= scrollHeight - 10) {

@@ -198,7 +198,7 @@ const DataRow: React.FC<DataRowProps> = ({
 
       {/* Number Box */}
       <div
-        className={`flex w-7 flex-shrink-0 items-center justify-center rounded-l border-r border-white text-base  bg-highlight text-black overflow-hidden`}
+        className={`bg-highlight flex w-7 flex-shrink-0 items-center justify-center overflow-hidden rounded-l border-r border-white text-base text-black`}
       >
         {number}
       </div>
@@ -215,19 +215,21 @@ const DataRow: React.FC<DataRowProps> = ({
             {title}
           </span>
         </div>
-        { !readOnly && <div className="flex gap-2 ml-2 justify-start">
-          <div onClick={(e) => handleAction('Rename', e)}>
-            <Icons.Rename className="text-black" />
-          </div>
-          <div onClick={(e) => handleAction('Delete', e)}>
-            <Icons.Cancel className="text-foreground" />
-          </div>
-          {onColor && (
-            <div onClick={(e) => handleAction('Color', e)}>
-              <Icons.ColorChange className="text-foreground" />
+        {!readOnly && (
+          <div className="ml-2 flex justify-start gap-2">
+            <div onClick={e => handleAction('Rename', e)}>
+              <Icons.Rename className="text-black" />
             </div>
-          )}
-        </div>}
+            <div onClick={e => handleAction('Delete', e)}>
+              <Icons.Cancel className="text-foreground" />
+            </div>
+            {onColor && (
+              <div onClick={e => handleAction('Color', e)}>
+                <Icons.ColorChange className="text-foreground" />
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
