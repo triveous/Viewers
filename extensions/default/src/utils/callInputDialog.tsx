@@ -48,7 +48,7 @@ const SearchBar = ({ onSelectHandler }) => {
       setLoading(true);
       try {
         const response = await fetch(
-          `https://advisory.midas.iisc.ac.in/be/public/ontology/NCIT_C83490/descendants?searchTerm=${debouncedSearchTerm}&page=${page}&pageSize=10`
+          `https://advisory.midas.iisc.ac.in/be/public/ontology?search=${debouncedSearchTerm}&page=${page}&pageSize=10`
         );
 
         if (!response.ok) {
