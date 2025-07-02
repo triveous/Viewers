@@ -20,7 +20,7 @@ const SearchBar = ({ onSelectHandler }) => {
   const [active, setActive] = useState(false);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const containerRef = useRef(null);
 
@@ -29,7 +29,7 @@ const SearchBar = ({ onSelectHandler }) => {
     const delay = 500;
     const timeoutId = setTimeout(() => {
       setDebouncedSearchTerm(searchTerm);
-      setPage(0); // Reset pagination on new search
+      setPage(1); // Reset pagination on new search
       setData([]); // Clear old data
       setHasMore(true);
     }, delay);
@@ -108,6 +108,7 @@ const SearchBar = ({ onSelectHandler }) => {
           placeholder="Search..."
         />
       </div>
+      {loading && !active && <div className="p-2 text-sm text-gray-500">Loading...</div>}
       {active && (
         <div
           ref={containerRef}
