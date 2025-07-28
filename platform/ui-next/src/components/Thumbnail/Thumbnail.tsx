@@ -69,8 +69,7 @@ const Thumbnail = ({
     return (
       <div
         className={classnames(
-          'bg-white flex h-full w-full flex-col items-center justify-center gap-[2px] p-[4px]',
-
+          'flex h-full w-full flex-col items-center justify-center gap-[2px] bg-white p-[4px]'
         )}
       >
         <div className="h-full w-full bg-white">
@@ -176,10 +175,10 @@ const Thumbnail = ({
           </div>
         </div>
         <div className="mt-3 flex h-full w-full flex-col bg-white">
-          <div className="bg-white min-h-[18px] w-full overflow-hidden text-ellipsis pb-0.5 pl-1 text-[12px] font-normal leading-4 text-black">
+          <div className="min-h-[18px] w-full overflow-hidden text-ellipsis bg-white pb-0.5 pl-1 text-[12px] font-normal leading-4 text-black">
             {description}
           </div>
-          <div className="bg-white flex h-[12px] items-center gap-[7px] overflow-hidden">
+          <div className="flex h-[12px] items-center gap-[7px] overflow-hidden bg-white">
             <div className="text-muted-foreground pl-1 text-[11px]"> S:{seriesNumber}</div>
             <div className="text-muted-foreground text-[11px]">
               <div className="flex items-center gap-[4px]">
@@ -201,8 +200,7 @@ const Thumbnail = ({
     return (
       <div
         className={classnames(
-          'flex h-full w-full items-center justify-between pr-[8px] pl-[8px] pt-[4px] pb-[4px]',
-          isActive && 'bg-popover'
+          'flex h-full w-full items-center justify-between bg-white pr-[8px] pl-[8px] pt-[4px] pb-[4px]'
         )}
       >
         <div className="relative flex h-[32px] items-center gap-[8px]">
@@ -215,9 +213,9 @@ const Thumbnail = ({
           ></div>
           <div className="flex h-full flex-col">
             <div className="flex items-center gap-[7px]">
-              <div className="text-[13px] font-semibold text-white">{modality}</div>
+              <div className="text-[13px] font-semibold text-black">{modality}</div>
 
-              <div className="max-w-[160px] overflow-hidden overflow-ellipsis whitespace-nowrap text-[13px] font-normal text-white">
+              <div className="max-w-[160px] overflow-hidden overflow-ellipsis whitespace-nowrap text-[13px] font-normal text-black">
                 {description}
               </div>
             </div>
@@ -315,7 +313,7 @@ const Thumbnail = ({
     <div
       className={classnames(
         className,
-        'bg-muted hover:bg-white group flex cursor-pointer select-none flex-col rounded outline-none',
+        'bg-muted group flex cursor-pointer select-none flex-col rounded outline-none hover:bg-white',
         viewPreset === 'thumbnails' && 'h-full w-full',
         viewPreset === 'list' && 'col-span-2 h-[40px] w-[275px]'
       )}

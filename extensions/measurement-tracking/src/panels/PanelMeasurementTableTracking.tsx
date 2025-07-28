@@ -45,7 +45,7 @@ function PanelMeasurementTableTracking({
     if ( JSON.parse(localStorage.getItem('readOnly')) ) {
       setReadOnly(JSON.parse(localStorage.getItem('readOnly'))?.readOnly);
     } else {
-      console.log('we are in false....b');
+      console.log('we are in write mode');
     }
   }, []);
 
