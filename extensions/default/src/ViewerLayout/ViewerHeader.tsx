@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
@@ -16,6 +16,15 @@ function ViewerHeader({ appConfig }: withAppTypes<{ appConfig: AppTypes.Config }
 
   const navigate = useNavigate();
   const location = useLocation();
+  const [readOnly, setReadOnly] = useState(false);
+
+  useEffect(() => {
+    if (JSON.parse(localStorage.getItem('readOnly'))) {
+      setReadOnly(JSON.parse(localStorage.getItem('readOnly'))?.readOnly);
+    } else {
+      console.log('we are in false....');
+    }
+  }, []);
 
   const onClickReturnButton = () => {
     const { pathname } = location;
@@ -48,47 +57,48 @@ function ViewerHeader({ appConfig }: withAppTypes<{ appConfig: AppTypes.Config }
   ) as Types.MenuComponentCustomization;
 
   const menuOptions = [
-    {
-      title: AboutModal?.menuTitle ?? t('Header:About'),
-      icon: 'info',
-      onClick: () =>
-        show({
-          content: AboutModal,
-          title: AboutModal?.title ?? t('AboutModal:About OHIF Viewer'),
-          containerClassName: AboutModal?.containerClassName ?? 'max-w-md',
-        }),
-    },
-    {
-      title: UserPreferencesModal.menuTitle ?? t('Header:Preferences'),
-      icon: 'settings',
-      onClick: () =>
-        show({
-          content: UserPreferencesModal,
-          title: UserPreferencesModal.title ?? t('UserPreferencesModal:User preferences'),
-          containerClassName:
-            UserPreferencesModal?.containerClassName ?? 'flex max-w-4xl p-6 flex-col',
-        }),
-    },
+    // {
+    //   title: AboutModal?.menuTitle ?? t('Header:About'),
+    //   icon: 'info',
+    //   onClick: () =>
+    //     show({
+    //       content: AboutModal,
+    //       title: AboutModal?.title ?? t('AboutModal:About OHIF Viewer'),
+    //       containerClassName: AboutModal?.containerClassName ?? 'max-w-md',
+    //     }),
+    // },
+    // {
+    //   title: UserPreferencesModal.menuTitle ?? t('Header:Preferences'),
+    //   icon: 'settings',
+    //   onClick: () =>
+    //     show({
+    //       content: UserPreferencesModal,
+    //       title: UserPreferencesModal.title ?? t('UserPreferencesModal:User preferences'),
+    //       containerClassName:
+    //         UserPreferencesModal?.containerClassName ?? 'flex max-w-4xl p-6 flex-col',
+    //     }),
+    // },
   ];
 
   if (appConfig.oidc) {
-    menuOptions.push({
-      title: t('Header:Logout'),
-      icon: 'power-off',
-      onClick: async () => {
-        navigate(`/logout?redirect_uri=${encodeURIComponent(window.location.href)}`);
-      },
-    });
+    // menuOptions.push({
+    //   title: t('Header:Logout'),
+    //   icon: 'power-off',
+    //   onClick: async () => {
+    //     navigate(`/logout?redirect_uri=${encodeURIComponent(window.location.href)}`);
+    //   },
+    // });
   }
 
   return (
     <Header
-      menuOptions={menuOptions}
-      isReturnEnabled={!!appConfig.showStudyList}
+      menuOptions={[]}
+      isReturnEnabled={false && !!appConfig.showStudyList}
       onClickReturnButton={onClickReturnButton}
       WhiteLabeling={appConfig.whiteLabeling}
-      Secondary={<Toolbar buttonSection="secondary" />}
+      Secondary={!readOnly ? <Toolbar buttonSection="secondary" /> : <></>}
       PatientInfo={
+        false &&
         appConfig.showPatientInfo !== PatientInfoVisibility.DISABLED && (
           <HeaderPatientInfo
             servicesManager={servicesManager}
@@ -97,31 +107,34 @@ function ViewerHeader({ appConfig }: withAppTypes<{ appConfig: AppTypes.Config }
         )
       }
       UndoRedo={
-        <div className="text-primary flex cursor-pointer items-center">
-          <Button
-            variant="ghost"
-            className="hover:bg-primary-dark"
-            onClick={() => {
-              commandsManager.run('undo');
-            }}
-          >
-            <Icons.Undo className="" />
-          </Button>
-          <Button
-            variant="ghost"
-            className="hover:bg-primary-dark"
-            onClick={() => {
-              commandsManager.run('redo');
-            }}
-          >
-            <Icons.Redo className="" />
-          </Button>
-        </div>
+        <></>
+        // <div className="text-primary flex cursor-pointer items-center">
+        //   <Button
+        //     variant="ghost"
+        //     className="hover:bg-primary-dark"
+        //     onClick={() => {
+        //       commandsManager.run('undo');
+        //     }}
+        //   >
+        //     <Icons.Undo className="" />
+        //   </Button>
+        //   <Button
+        //     variant="ghost"
+        //     className="hover:bg-primary-dark"
+        //     onClick={() => {
+        //       commandsManager.run('redo');
+        //     }}
+        //   >
+        //     <Icons.Redo className="" />
+        //   </Button>
+        // </div>
       }
     >
-      <div className="relative flex justify-center gap-[4px]">
-        <Toolbar buttonSection="primary" />
-      </div>
+      {!readOnly && (
+        <div className="relative flex justify-center gap-[4px]">
+          <Toolbar buttonSection="primary" />
+        </div>
+      )}
     </Header>
   );
 }

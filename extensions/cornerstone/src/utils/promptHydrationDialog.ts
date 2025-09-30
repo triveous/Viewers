@@ -78,8 +78,8 @@ function promptHydrationDialog({
   return new Promise(async function (resolve, reject) {
     // For RT and SEG, we check disableConfirmationPrompts
     // For SR, we check if standardMode is true
-    const shouldPrompt =
-      type === HydrationType.SR ? standardMode : !appConfig?.disableConfirmationPrompts;
+    const shouldPrompt = false;
+    // type === HydrationType.SR ? standardMode : !appConfig?.disableConfirmationPrompts;
 
     const promptResult = shouldPrompt
       ? await _askHydrate(uiViewportDialogService, customizationService, viewportId, type)

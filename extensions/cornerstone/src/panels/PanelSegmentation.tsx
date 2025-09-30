@@ -175,13 +175,13 @@ export default function PanelSegmentation({ children }: withAppTypes) {
     if (tableProps.mode === 'collapsed') {
       return (
         <SegmentationTable.Collapsed>
-          <SegmentationTable.Collapsed.Header>
-            <SegmentationTable.Collapsed.DropdownMenu>
+          {/* <SegmentationTable.Collapsed.Header>
+          <SegmentationTable.Collapsed.DropdownMenu>
               <CustomDropdownMenuContent />
             </SegmentationTable.Collapsed.DropdownMenu>
-            <SegmentationTable.Collapsed.Selector />
+          <SegmentationTable.Collapsed.Selector />
             <SegmentationTable.Collapsed.Info />
-          </SegmentationTable.Collapsed.Header>
+          </SegmentationTable.Collapsed.Header> */}
           <SegmentationTable.Collapsed.Content>
             <SegmentationTable.AddSegmentRow />
             {renderSegments()}
