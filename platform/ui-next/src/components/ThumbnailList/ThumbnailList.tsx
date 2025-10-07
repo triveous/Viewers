@@ -21,7 +21,7 @@ const ThumbnailList = ({
 
   // console.log('---ThumbnailList', thumbnails);
   const latestThumbnail = thumbnails
-    .filter(thumb => thumb.modality === 'SR')
+    .filter(thumb => thumb.modality === 'SR' && thumb.description !== 'Image label/diagnoses')
     .reduce(
       (max, current) => {
         return current.seriesNumber > max.seriesNumber ? current : max;
