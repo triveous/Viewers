@@ -204,30 +204,62 @@ async function _loadSegments({
     { metadataProvider: metaData, tolerance }
   );
 
+  // Map of segment label → RGBA color
+  const FIXED_COLORS = {
+    'Tumor & Normal Brain Boundary': [255, 0, 0, 255], // Red
+    'Edema & Brain Boundary': [255, 255, 0, 255], // Yellow
+    'Tumor & Dura Boundary': [0, 255, 0, 255], // Green
+    'Tumor & Edema Boundary': [0, 0, 255, 255], // Blue
+    'Tumor & Necrosis Boundary': [0, 0, 139, 255], // Dark Blue
+  };
   let usedRecommendedDisplayCIELabValue = true;
   results.segMetadata.data.forEach((data, i) => {
     if (i > 0) {
       data.rgba = data.RecommendedDisplayCIELabValue;
+      const label = data.SegmentLabel || data.label;
 
-      if (data.rgba) {
-        data.rgba = dicomlabToRGB(data.rgba);
-      } else {
-        usedRecommendedDisplayCIELabValue = false;
-        data.rgba = CONSTANTS.COLOR_LUT[i % CONSTANTS.COLOR_LUT.length];
+      // ---- 1. Check if label matches predefined labels ----
+      if (FIXED_COLORS[label]) {
+        console.log('Using fixed color for label:', label);
+        data.rgba = FIXED_COLORS[label];
+        return;
       }
+
+      // ---- 2. Try RecommendedDisplayCIELabValue ----
+      if (data.RecommendedDisplayCIELabValue) {
+        console.log('Using CIELab for:', label);
+        data.rgba = dicomlabToRGB(data.RecommendedDisplayCIELabValue);
+        return;
+      }
+
+      // ---- 3. Fallback to OHIF defaults (LUT) ----
+      console.log('Using default OHIF color for:', label);
+      usedRecommendedDisplayCIELabValue = false;
+      data.rgba = CONSTANTS.COLOR_LUT[i % CONSTANTS.COLOR_LUT.length];
+      // console.log('RecommendedDisplayCIELabValue:', data.RecommendedDisplayCIELabValue);
+      // console.log('SegmentLabel:', data.SegmentLabel);
+
+      // if (data.rgba) {
+      //   data.rgba = dicomlabToRGB(data.rgba);
+      // } else {
+      //   usedRecommendedDisplayCIELabValue = false;
+      //   data.rgba = CONSTANTS.COLOR_LUT[i % CONSTANTS.COLOR_LUT.length];
+      // }
     }
   });
 
-  if (!usedRecommendedDisplayCIELabValue) {
-    // Display a notification about the non-utilization of RecommendedDisplayCIELabValue
-    uiNotificationService.show({
-      title: 'DICOM SEG import',
-      message:
-        'RecommendedDisplayCIELabValue not found for one or more segments. The default color was used instead.',
-      type: 'warning',
-      duration: 5000,
-    });
-  }
+  console.log('usedRecommendedDisplayCIELabValue', usedRecommendedDisplayCIELabValue);
+
+  // if (!usedRecommendedDisplayCIELabValue) {
+  //   // Display a notification about the non-utilization of RecommendedDisplayCIELabValue
+  //   uiNotificationService.show({
+  //     title: 'DICOM SEG import',
+  //     message:
+  //       'RecommendedDisplayCIELabValue not found for one or more segments. The default color was used instead.',
+  //     type: 'warning',
+  //     duration: 5000,
+  //   });
+  // }
 
   Object.assign(segDisplaySet, results);
 }
